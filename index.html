@@ -718,29 +718,8 @@ body{
 }
 .sf-amt span{font-size:22px;font-weight:600;vertical-align:super;line-height:1}
 .sf-tagline{font-size:14px;color:rgba(255,255,255,.85);line-height:21px;font-weight:400}
-.sf-body{padding:18px 0;display:flex;flex-direction:column;gap:16px}
-.sf-copy{font-size:14px;color:var(--text-body);line-height:22px}
-.sf-copy strong{color:var(--text);font-weight:600}
-.sf-cats{display:flex;flex-wrap:wrap;gap:8px}
-.sf-cat{
-  display:flex;align-items:center;gap:5px;
-  background:var(--bg-subtle);border:1px solid var(--bdr);
-  border-radius:20px;padding:5px 11px;
-  font-size:12px;font-weight:500;color:var(--text-body);
-}
-.sf-cat-ico{font-size:13px}
-.sf-divider{height:1px;background:var(--bdr)}
-.sf-info{display:flex;flex-direction:column;gap:8px}
-.sf-info-row{
-  display:flex;align-items:flex-start;gap:10px;
-  font-size:12px;color:var(--text-sub);line-height:18px;
-}
-.sf-info-ico{
-  width:20px;height:20px;border-radius:6px;
-  background:var(--brand-dim);display:flex;
-  align-items:center;justify-content:center;
-  font-size:11px;flex-shrink:0;margin-top:1px;
-}
+.sf-body{padding:20px 0 0;display:flex;flex-direction:column;gap:12px}
+.sf-note{font-size:12px;color:var(--text-sub);line-height:18px;text-align:center}
 .sf-cta{
   width:100%;height:52px;border:none;border-radius:var(--r-btn);
   background:var(--cta);color:#fff;
@@ -901,9 +880,9 @@ body{
   <div class="dev-row">
     <span class="dev-lbl">Simulate QR scan</span>
     <div class="dev-seg">
-      <button class="dev-opt" onclick="setDevQR(1,this)">QR 1 · $10 Amazon</button>
-      <button class="dev-opt on" onclick="setDevQR(2,this)">QR 2 · $20 Netflix</button>
-      <button class="dev-opt" onclick="setDevQR(3,this)">Storefront</button>
+      <button class="dev-opt" onclick="setDevQR(1,this)">Amazon</button>
+      <button class="dev-opt" onclick="setDevQR(2,this)">Netflix</button>
+      <button class="dev-opt on" onclick="setDevQR(3,this)">Storefront</button>
     </div>
   </div>
 </div>
@@ -1353,44 +1332,18 @@ body{
       <!-- STOREFRONT STATE -->
       <div class="storefront-state">
         <div class="sf-hero">
-          <div class="sf-badge">🎉 You've won</div>
+          <div class="sf-badge">🎉 Congratulations</div>
           <div class="sf-amt"><span>$</span>20</div>
-          <div class="sf-tagline">A reward worth spending on what matters most to you — coffee, fashion, travel, and everything in between.</div>
+          <div class="sf-tagline">Your reward is ready. Pick any brand you love — from coffee and fashion to travel and beyond.</div>
         </div>
-
         <div class="sf-body">
-          <p class="sf-copy">
-            Your <strong>$20 Xoxoday reward</strong> is ready to redeem — no strings attached.
-            Browse thousands of brands across categories that fit every mood, moment, and milestone.
-            From a quick Starbucks pick-me-up to a luxe lounge experience before your flight, we've got you covered.
-          </p>
-
-          <div class="sf-cats">
-            <div class="sf-cat"><span class="sf-cat-ico">☕</span>Food &amp; Drink</div>
-            <div class="sf-cat"><span class="sf-cat-ico">✈️</span>Travel</div>
-            <div class="sf-cat"><span class="sf-cat-ico">👗</span>Fashion</div>
-            <div class="sf-cat"><span class="sf-cat-ico">💄</span>Beauty</div>
-            <div class="sf-cat"><span class="sf-cat-ico">🎬</span>Entertainment</div>
-            <div class="sf-cat"><span class="sf-cat-ico">💎</span>Jewellery</div>
-            <div class="sf-cat"><span class="sf-cat-ico">📱</span>Electronics</div>
-            <div class="sf-cat"><span class="sf-cat-ico">🛍️</span>Lifestyle</div>
-          </div>
-
           <a class="sf-cta" href="https://stores.xoxoday.com/marketplace/home" target="_blank">
-            Explore the Marketplace
+            Redeem at Marketplace
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 8h10M9 4l4 4-4 4"/>
             </svg>
           </a>
-
-          <div class="sf-divider"></div>
-
-          <div class="sf-info">
-            <div class="sf-info-row"><div class="sf-info-ico">⚡</div>Voucher code delivered instantly to your registered email.</div>
-            <div class="sf-info-row"><div class="sf-info-ico">📅</div>Valid for <strong>30 days</strong> from the date of issue.</div>
-            <div class="sf-info-row"><div class="sf-info-ico">🌍</div>Redeemable across <strong>10,000+ brands</strong> in 100+ categories globally.</div>
-            <div class="sf-info-row"><div class="sf-info-ico">🔒</div>Secured and fulfilled by Xoxoday. One reward per eligible transaction.</div>
-          </div>
+          <p class="sf-note">Voucher code will be sent to your registered email. Valid for 30 days.</p>
         </div>
       </div>
 
@@ -1552,7 +1505,7 @@ const qrCfg = {
     {name:'Sugar Beauty Lounge',                              logo:'sugar.png',         tagline:'Beauty & wellness',          amt:'$19'},
   ]},
 };
-let activeQR = 2;
+let activeQR = 3;
 let selectedVoucher = 'alt-0';
 let voucherClaimed  = false;
 
