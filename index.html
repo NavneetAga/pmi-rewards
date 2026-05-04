@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PMI Travel Retail · Rewards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<style>
+/* ── Reset ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input{font-family:inherit}
+
+/*
+  ═══════════════════════════════════════════════════
+  FLAME 1.0 · LIGHT THEME · Scotch-Unleashed reference
+  ───────────────────────────────────────────────────
+  Backgrounds
+    Page         #FFFFFF
+    Status/nav   #F7F7F7
+    Input        #FFFFFF
+    Chip/tag     #F5F5F5
+
+  Text
+    Primary      #313335   (Inter 600)
+    Secondary    #8C9399   (Inter 400)
+    Body         #4C5A70   (Inter 400)
+    Muted        #3C495E
+    Inverse      #FFFFFF
+
+  Brand
+    Xoxoday      #565ADD   (purple — links, focus, accents)
+    Primary CTA  #1D61F6   (blue  — filled button)
+    CTA disabled #DADCEE
+    CTA loading  #D4D5F6
+
+  Borders
+    Divider      #E7E9EB   1px
+    Input def.   #D7D9DB   1px
+    Input focus  #565ADD   1px
+
+  Button
+    Height 48px · radius 4px · Inter 500 14px/20px
+
+  TextField
+    Height 44px (editor) · radius 8px · pad 12px 16px
+
+  ═══════════════════════════════════════════════════
+*/
+
+:root{
+  --bg:         #FFFFFF;
+  --bg-soft:    #F7F7F7;
+  --bg-subtle:  #F5F5F5;
+
+  --text:       #313335;
+  --text-sub:   #8C9399;
+  --text-body:  #4C5A70;
+  --text-muted: #3C495E;
+
+  --brand:      #565ADD;
+  --brand-dim:  rgba(86,90,221,.1);
+  --cta:        #1D61F6;
+  --cta-dis:    #DADCEE;
+  --cta-load:   #D4D5F6;
+
+  --bdr:        #E7E9EB;
+  --inp-bdr:    #D7D9DB;
+  --inp-focus:  #565ADD;
+
+  --success:    #0EB072;
+  --success-dk: #047857;
+  --error:      #F04438;
+  --nflx:       #E50914;
+  --amz:        #FF9900;
+
+  --r-btn:      4px;
+  --r-inp:      8px;
+  --r-card:     12px;
+
+  --shadow-card: 0 1px 4px rgba(0,0,0,.08), 0 0 0 1px var(--bdr);
+  --shadow-drop: 0 4px 16px rgba(0,0,0,.1);
+
+  --ease:       cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Desktop wrapper ── */
+body{
+  min-height:100vh;
+  background:#ECEDF8;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:28px 16px;
+  gap:14px;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+.desktop-label{
+  font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  color:rgba(86,90,221,.5);text-align:center;
+}
+
+/* ── Device shell ── */
+.device{
+  width:390px;height:844px;
+  background:#FFFFFF;
+  border-radius:52px;
+  box-shadow:
+    0 0 0 1.5px #C8C8CA,
+    0 0 0 7px #E5E5E7,
+    0 40px 80px rgba(0,0,0,.18);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+
+/* Dynamic Island */
+.di{
+  position:absolute;top:12px;left:50%;
+  transform:translateX(-50%);
+  width:120px;height:34px;
+  background:#000;border-radius:18px;z-index:200;
+}
+
+/* Status bar */
+.sbar{
+  position:absolute;top:0;left:0;right:0;height:54px;
+  background:var(--bg-soft);
+  display:flex;align-items:flex-end;
+  padding:0 24px 8px;
+  justify-content:space-between;z-index:150;
+  border-bottom:1px solid var(--bdr);
+}
+.sbar-time{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.1px}
+.sbar-icons{display:flex;align-items:center;gap:5px}
+
+/* Browser chrome */
+.chrome{
+  position:absolute;top:54px;left:0;right:0;
+  background:var(--bg-soft);
+  border-bottom:1px solid var(--bdr);
+  padding:7px 14px 9px;z-index:149;
+}
+.url-bar{
+  background:rgba(51,51,51,.08);
+  border-radius:17px;
+  padding:8px 14px;
+  display:flex;align-items:center;gap:7px;
+}
+.url-lock{font-size:10px;color:var(--text-sub)}
+.url-text{font-size:12px;font-weight:400;color:var(--text-body);flex:1;text-align:center}
+.url-reload{font-size:13px;color:var(--text-sub)}
+
+/* Content */
+.content{
+  position:absolute;top:112px;left:0;right:0;bottom:0;overflow:hidden;
+}
+
+/* ── Screen transitions ── */
+.scr{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  transform:translateX(106%);
+  transition:transform .4s var(--ease);
+  -webkit-overflow-scrolling:touch;
+  background:var(--bg);
+}
+.scr::-webkit-scrollbar{display:none}
+.scr.on{transform:translateX(0)}
+.scr.left{transform:translateX(-28%)}
+
+
+/* ═════════════════════════════
+   SCREEN 0 — QR SCANNER
+═════════════════════════════ */
+#s0{background:#0D0D14;display:flex;flex-direction:column;min-height:100%}
+.cam-top{
+  padding:24px 20px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.cam-logo{height:28px;width:auto;filter:brightness(0) invert(1);opacity:.88}
+.cam-top-lbl{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+.cam-body{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:28px;padding:28px 20px;
+}
+.cam-hint{font-size:15px;font-weight:500;color:rgba(255,255,255,0.85);text-align:center;line-height:24px}
+.cam-scan-wrap{position:relative;width:240px;height:240px}
+#cam-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;border-radius:6px;display:none;
+}
+.qr-card{
+  position:absolute;inset:14px;
+  background:#fff;border-radius:6px;
+  padding:12px 12px 8px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  box-shadow:0 4px 32px rgba(0,0,0,0.5);
+}
+#qr-svg-wrap{width:100%;flex:1;min-height:0}
+.qr-card-label{
+  font-size:7.5px;font-weight:700;letter-spacing:1.8px;
+  text-transform:uppercase;color:#565ADD;white-space:nowrap;
+}
+.qr-frame{
+  position:absolute;inset:0;cursor:pointer;
+}
+.qf-corner{position:absolute;width:28px;height:28px;border-style:solid;border-width:0;transition:border-color .35s}
+.qf-corner.tl{top:0;left:0;border-top-width:3px;border-left-width:3px;border-top-left-radius:5px;border-color:#FFFFFF}
+.qf-corner.tr{top:0;right:0;border-top-width:3px;border-right-width:3px;border-top-right-radius:5px;border-color:#FFFFFF}
+.qf-corner.bl{bottom:0;left:0;border-bottom-width:3px;border-left-width:3px;border-bottom-left-radius:5px;border-color:#FFFFFF}
+.qf-corner.br{bottom:0;right:0;border-bottom-width:3px;border-right-width:3px;border-bottom-right-radius:5px;border-color:#FFFFFF}
+.qr-frame.detected .qf-corner{border-color:#0EB072}
+.qf-scanline{
+  position:absolute;left:10px;right:10px;height:2px;top:10px;
+  background:linear-gradient(90deg,transparent 0%,#1D61F6 40%,#565ADD 60%,transparent 100%);
+  border-radius:2px;
+  animation:qr-sweep 2.2s ease-in-out infinite;
+}
+@keyframes qr-sweep{
+  0%{top:10px;opacity:0.9}
+  50%{top:calc(100% - 12px);opacity:0.9}
+  100%{top:10px;opacity:0.5}
+}
+.qr-frame.detected .qf-scanline{display:none}
+.qf-detected-ico{
+  display:none;position:absolute;inset:0;
+  align-items:center;justify-content:center;
+}
+.qr-frame.detected .qf-detected-ico{display:flex}
+.qf-check{
+  width:52px;height:52px;border-radius:50%;background:#0EB072;
+  display:flex;align-items:center;justify-content:center;
+  animation:pop-in .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes pop-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.cam-sub{font-size:13px;color:rgba(255,255,255,0.45);text-align:center;line-height:20px;padding:0 16px}
+.cam-bottom{
+  padding:20px 20px 28px;text-align:center;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+.cam-status{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);transition:color .3s}
+.cam-status.ok{color:#0EB072}
+
+/* ═════════════════════════════
+   SCREEN 1 — LANDING
+═════════════════════════════ */
+#s1{display:flex;flex-direction:column;min-height:100%}
+
+.land-top{
+  padding:28px 20px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bdr);
+}
+
+/* PMI logo image */
+.pmi-logo{height:42px;width:auto;display:block}
+.pmi-logo-center{height:24px;width:auto;display:block}
+
+.tr-label{
+  font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-sub);padding-top:4px;
+}
+
+.land-body{flex:1;padding:16px 20px 0;display:flex;flex-direction:column;justify-content:space-evenly}
+
+/* Heading: Inter 600 26px */
+.land-h1{
+  font-size:26px;font-weight:600;color:var(--text);
+  line-height:38px;letter-spacing:-.3px;margin-bottom:12px;
+}
+.land-h1 em{font-style:normal;color:var(--brand)}
+
+/* Body: Inter 400 14px */
+.land-sub{
+  font-size:14px;font-weight:400;color:var(--text-body);
+  line-height:22px;margin-bottom:0;max-width:300px;
+}
+
+/* Voucher teaser card */
+.vtease-wrap{margin:0}
+.vtease-card{
+  background:var(--bg);
+  border:1px solid var(--bdr);
+  border-radius:var(--r-card);
+  padding:20px 0 20px 20px;
+  display:flex;align-items:center;
+  overflow:hidden;position:relative;
+  min-height:110px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+}
+.vtease-left{flex:1;z-index:2}
+.vtease-eyebrow{
+  font-size:10px;font-weight:600;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-sub);margin-bottom:8px;
+}
+.vtease-title{
+  font-size:20px;font-weight:600;
+  color:var(--text);line-height:30px;
+  letter-spacing:-.2px;margin-bottom:6px;
+}
+.vtease-sub{
+  font-size:12px;font-weight:400;
+  color:var(--text-sub);line-height:18px;
+}
+.vtease-img-wrap{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:flex-end;
+  margin-right:16px;z-index:1;
+}
+.vtease-emoji{
+  font-size:60px;line-height:1;
+  transform:rotate(8deg) translateY(-4px);
+  display:block;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,.12));
+}
+.vtease-card::after{
+  content:'';position:absolute;right:-10px;top:-10px;
+  width:140px;height:140px;
+  background:radial-gradient(circle,rgba(86,90,221,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* Steps list — Scotch-Unleashed circular pill style */
+.steps-list{display:flex;flex-direction:column;gap:0;margin-bottom:4px}
+.step-row{
+  display:flex;align-items:center;gap:16px;
+  padding:8px 0;
+}
+.step-pill{
+  width:40px;height:40px;border-radius:100px;
+  background:#F5F5FF;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:500;color:#000;line-height:1;
+}
+.step-txt{font-size:14px;font-weight:400;color:var(--text);line-height:22px}
+
+/* ── Sticky footer ── */
+.sticky-footer{
+  position:sticky;bottom:0;
+  background:var(--bg);
+  padding:12px 20px 22px;
+  border-top:1px solid var(--bdr);
+  margin-top:auto;
+}
+
+/* Flame Button — Solid: 48px · 4px radius · Inter 500 14px · #1D61F6 */
+.btn-primary, .btn-blue{
+  width:100%;height:48px;padding:0 16px;
+  background:var(--cta);color:#FFFFFF;
+  font-size:14px;font-weight:500;line-height:20px;
+  border:none;border-radius:var(--r-btn);
+  transition:background .15s var(--ease), transform .12s;
+  letter-spacing:0;
+}
+.btn-primary:hover, .btn-blue:hover{background:#1550d4}
+.btn-primary:active, .btn-blue:active{transform:scale(.98);background:#1244bc}
+
+.foot-links{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+.foot-tc{
+  font-size:12px;font-weight:400;color:var(--brand);
+  text-decoration:underline;text-underline-offset:2px;
+  background:none;border:none;cursor:pointer;
+  transition:opacity .15s;
+}
+.foot-tc:hover{opacity:.75}
+.foot-by{font-size:12px;font-weight:400;color:var(--text-sub)}
+.foot-by a,.foot-xoxo{font-size:12px;font-weight:400;color:var(--brand);text-decoration:underline;text-underline-offset:2px}
+
+
+/* ═════════════════════════════
+   SCREENS 2–4 SHARED HEADER
+═════════════════════════════ */
+.inner-hdr{
+  padding:12px 20px 0;
+  background:var(--bg);
+  position:sticky;top:0;z-index:30;
+  border-bottom:1px solid var(--bdr);
+}
+.hdr-row{position:relative;display:flex;align-items:center;margin-bottom:12px}
+.back-btn{
+  background:none;border:none;
+  font-size:22px;color:var(--text-body);
+  line-height:1;padding:0;
+  transition:color .15s;z-index:1;
+}
+.back-btn:hover{color:var(--text)}
+.pmi-logo-center{position:absolute;left:50%;transform:translateX(-50%);height:24px;width:auto;display:block}
+
+/* ── Flame Stepper (circles + labels + connector) ── */
+.steps-nav{
+  display:flex;align-items:center;
+  padding-bottom:12px;margin-bottom:0;
+}
+.sn-step{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.sn-dot{
+  width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--inp-bdr);
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s;
+}
+.sn-dot.act{background:var(--cta);border-color:var(--cta)}
+.sn-dot.done{background:var(--brand);border-color:var(--brand)}
+.sn-num{font-size:10px;font-weight:600;color:var(--text-sub);line-height:1}
+.sn-num.act{color:#fff}
+.sn-num.done{color:#fff}
+.sn-lbl{font-size:11px;font-weight:500;color:var(--text-sub)}
+.sn-lbl.act{color:var(--cta);font-weight:600}
+.sn-lbl.done{color:var(--brand)}
+.sn-line{flex:1;height:1px;background:var(--bdr);margin:0 8px;transition:background .3s}
+.sn-line.done{background:var(--brand)}
+
+
+/* ═════════════════════════════
+   SCREEN 2 — FORM
+═════════════════════════════ */
+#s2{display:flex;flex-direction:column}
+.form-body{padding:20px 20px 0;display:flex;flex-direction:column;gap:20px}
+
+/* Heading: Inter 600 24px/36px */
+.f-h1{font-size:24px;font-weight:600;color:var(--text);line-height:36px;letter-spacing:-.2px;margin-bottom:2px}
+.f-sub{font-size:14px;font-weight:400;color:var(--text-sub);line-height:20px}
+
+/* Field group */
+.fg{display:flex;flex-direction:column;gap:6px}
+.fg-lbl{font-size:12px;font-weight:500;color:var(--text-body);line-height:18px}
+.req{color:var(--error);margin-left:2px;font-size:11px}
+.fg-err{display:none;font-size:12px;color:var(--error);margin-top:5px;line-height:18px}
+.fg.err .fg-err{display:block}
+.fg.err .dark-field{border-color:var(--error) !important}
+.fg.err .seg{outline:1.5px solid var(--error);border-radius:var(--r-inp)}
+
+/* Flame Segmented control */
+.seg{
+  background:var(--bg-subtle);border:1px solid var(--bdr);
+  border-radius:var(--r-inp);padding:3px;display:flex;gap:3px;
+}
+.seg-btn{
+  flex:1;height:36px;background:transparent;
+  border:none;border-radius:6px;
+  font-size:14px;font-weight:500;color:var(--text-sub);
+  transition:all .18s;
+}
+.seg-btn.on{
+  background:#FFFFFF;color:var(--cta);font-weight:600;
+  box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+
+/* Flame Chips */
+.age-pills{display:flex;flex-wrap:wrap;gap:8px}
+.age-pill{
+  padding:7px 14px;
+  background:var(--bg);
+  border:1.5px solid var(--inp-bdr);
+  border-radius:100px;
+  font-size:13px;font-weight:500;color:var(--text-sub);
+  line-height:18px;transition:all .18s;
+}
+.age-pill.on{
+  border-color:var(--brand);color:var(--brand);
+  background:var(--brand-dim);
+}
+
+/* Flame TextField */
+.dark-field{
+  background:var(--bg);
+  border:1px solid var(--inp-bdr);
+  border-radius:var(--r-inp);
+  padding:12px 16px;
+  transition:border-color .18s,box-shadow .18s;
+  cursor:pointer;
+}
+.dark-field:focus-within{
+  border-color:var(--inp-focus);
+  box-shadow:0 0 0 3px rgba(86,90,221,.12);
+}
+.df-lbl{font-size:11px;font-weight:500;color:var(--text-sub);margin-bottom:3px;display:block}
+.df-val{
+  font-size:14px;font-weight:400;color:var(--text);
+  display:flex;align-items:center;justify-content:space-between;line-height:22px;
+}
+.df-val.ph{color:var(--text-sub)}
+.df-arr{font-size:11px;color:var(--text-sub)}
+.df-inp{
+  width:100%;background:transparent;border:none;outline:none;
+  font-size:14px;font-weight:400;line-height:22px;color:var(--text);
+}
+.df-inp::placeholder{color:var(--text-sub);font-weight:400}
+
+/* Flame Checkbox */
+.check-row{display:flex;align-items:flex-start;gap:12px;padding-top:2px;cursor:pointer}
+.custom-cb{
+  width:18px;height:18px;
+  background:var(--bg);border:1.5px solid var(--inp-bdr);
+  border-radius:4px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;transition:all .15s;
+}
+.custom-cb.on{background:var(--cta);border-color:var(--cta)}
+.custom-cb .cb-check{display:none}
+.custom-cb.on .cb-check{display:block}
+.check-row p{font-size:13px;font-weight:400;color:var(--text-body);line-height:20px}
+
+/* Dropdown */
+.sel-wrap{position:relative}
+.sel-drop{
+  display:none;position:absolute;left:0;right:0;top:100%;
+  background:#FFFFFF;
+  border:1.5px solid var(--inp-focus);border-top:none;
+  border-radius:0 0 var(--r-inp) var(--r-inp);
+  z-index:50;max-height:200px;overflow-y:auto;
+  box-shadow:var(--shadow-drop);
+}
+.sel-drop.open{display:block}
+.sel-search{
+  position:sticky;top:0;background:#FFFFFF;
+  padding:8px 12px;border-bottom:1px solid var(--bdr);
+}
+.sel-search input{
+  width:100%;background:transparent;border:none;outline:none;
+  font-size:13px;font-weight:400;color:var(--text);line-height:20px;
+}
+.sel-search input::placeholder{color:var(--text-sub)}
+.sel-opt{
+  padding:11px 14px;font-size:13px;font-weight:400;color:var(--text);
+  cursor:pointer;border-bottom:1px solid rgba(0,0,0,.04);transition:background .1s;
+}
+.sel-opt:hover{background:var(--bg-subtle)}
+.sel-opt.chosen{color:var(--brand);font-weight:600}
+.sel-opt-sub{font-size:11px;font-weight:400;color:var(--text-sub);margin-top:2px}
+
+
+/* ═════════════════════════════
+   SCREEN 3 — SCAN
+═════════════════════════════ */
+#s3{display:flex;flex-direction:column}
+.scan-body{padding:20px 20px 0;display:flex;flex-direction:column;gap:4px}
+
+.scan-card{
+  background:#FFFFFF;border:1px solid var(--bdr);
+  border-radius:var(--r-card);overflow:hidden;
+  margin-bottom:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.06);
+}
+
+/* Tap state */
+.tap-state{padding:26px 20px;text-align:center;cursor:pointer}
+.tap-ico{font-size:28px;margin-bottom:8px}
+.tap-lbl{font-size:14px;font-weight:600;color:var(--cta);margin-bottom:4px;line-height:22px}
+.tap-sub{font-size:12px;font-weight:400;color:var(--text-sub);line-height:18px}
+
+/* Scan animation */
+.scan-state{
+  display:none;height:150px;
+  background:#F8F9FF;position:relative;overflow:hidden;
+}
+.scan-state.show{display:block}
+.scan-line{
+  position:absolute;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--brand),transparent);
+  box-shadow:0 0 8px var(--brand);
+  animation:scanmove 1.5s ease-in-out infinite;
+}
+@keyframes scanmove{0%{top:8%}100%{top:88%}}
+.scan-corners{position:absolute;inset:0}
+.sc{position:absolute;width:16px;height:16px}
+.sc.tl{top:10px;left:10px;border-top:2px solid var(--brand);border-left:2px solid var(--brand)}
+.sc.tr{top:10px;right:10px;border-top:2px solid var(--brand);border-right:2px solid var(--brand)}
+.sc.bl{bottom:10px;left:10px;border-bottom:2px solid var(--brand);border-left:2px solid var(--brand)}
+.sc.br{bottom:10px;right:10px;border-bottom:2px solid var(--brand);border-right:2px solid var(--brand)}
+.scan-hint{
+  position:absolute;bottom:10px;left:0;right:0;text-align:center;
+  font-size:11px;font-weight:500;color:var(--text-sub);letter-spacing:.3px;
+}
+
+/* Verified state */
+.verified-state{display:none}
+.verified-state.show{display:block}
+
+.v-hdr{padding:14px 16px 12px;display:flex;align-items:center;gap:10px}
+.v-check{
+  width:32px;height:32px;background:var(--success-dk);
+  border-radius:var(--r-inp);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.v-check svg{width:16px;height:16px}
+.v-hdr-txt{flex:1}
+.v-hdr-title{font-size:14px;font-weight:600;color:var(--text);line-height:22px}
+.v-hdr-sub{font-size:12px;font-weight:400;color:var(--success);margin-top:1px;line-height:18px}
+.retake-btn{
+  font-size:12px;font-weight:500;color:var(--brand);
+  background:none;border:none;padding:6px 10px;border-radius:6px;
+  transition:background .15s;
+}
+.retake-btn:hover{background:var(--brand-dim)}
+
+.v-rows{border-top:1px solid var(--bdr)}
+.v-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;border-bottom:1px solid var(--bdr);
+}
+.v-row:last-child{border-bottom:none}
+.vr-k{font-size:12px;font-weight:400;color:var(--text-sub);line-height:18px}
+.vr-v{font-size:12px;font-weight:600;color:var(--text);line-height:18px}
+
+.scan-note{
+  font-size:11px;font-weight:400;color:var(--text-sub);
+  text-align:center;padding:0 20px 16px;line-height:18px;
+}
+
+
+/* ═════════════════════════════
+   SCREEN 4 — SUCCESS
+═════════════════════════════ */
+#s4{display:flex;flex-direction:column}
+.succ-body{padding:20px 20px 0;display:flex;flex-direction:column;gap:16px;flex:1}
+
+.congrats-label{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--brand);margin-bottom:10px;
+}
+
+/* Heading: Inter 600 28px/40px */
+.succ-h1{
+  font-size:28px;font-weight:600;color:var(--text);
+  line-height:40px;letter-spacing:-.3px;margin-bottom:0;
+}
+.succ-h1 em{font-style:normal;color:var(--cta)}
+
+/* Voucher card */
+.vcard{
+  background:#FFFFFF;border:1px solid var(--bdr);
+  border-radius:var(--r-card);padding:18px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.vcard-top{
+  display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;
+}
+.nflx-text{font-size:20px;font-weight:700;letter-spacing:-1px;color:var(--nflx)}
+.evoucher-label{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-sub);
+}
+.vcard-amount{
+  font-size:44px;font-weight:700;color:var(--cta);line-height:1;margin-bottom:4px;
+}
+.vcard-tagline{font-size:13px;font-weight:400;color:var(--text-sub);margin-bottom:16px;line-height:20px}
+
+.vcard-code-section{border-top:1px solid var(--bdr);padding-top:14px}
+.vcard-code-lbl{
+  font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-sub);margin-bottom:8px;
+}
+.code-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.code-val{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.8px;font-family:'Courier New',monospace}
+.copy-btn{
+  display:flex;align-items:center;gap:5px;padding:7px 12px;
+  background:var(--bg-subtle);border:1px solid var(--bdr);
+  border-radius:var(--r-btn);font-size:12px;font-weight:500;color:var(--text-body);
+  white-space:nowrap;transition:background .15s,border-color .15s;
+}
+.copy-btn:hover{border-color:var(--brand);color:var(--brand)}
+.copy-btn svg{width:13px;height:13px;opacity:.6}
+
+/* No-voucher state */
+.win-state{display:flex;flex-direction:column;gap:16px;flex:1}
+.no-win-state{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:20px;text-align:center;padding:0 8px}
+#s4.no-voucher .win-state{display:none}
+#s4.no-voucher .no-win-state{display:flex}
+.no-win-icon{
+  width:80px;height:80px;border-radius:50%;
+  background:#FEF3C7;display:flex;align-items:center;justify-content:center;
+}
+.no-win-icon svg{width:38px;height:38px}
+.no-win-h1{font-size:24px;font-weight:600;color:var(--text);line-height:34px;letter-spacing:-.2px}
+.no-win-sub{font-size:14px;font-weight:400;color:var(--text-body);line-height:22px;max-width:280px}
+
+/* ── Voucher grid ── */
+.alt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.alt-card{
+  border:2px solid var(--bdr);border-radius:var(--r-card);
+  overflow:hidden;cursor:pointer;position:relative;
+  transition:border-color .2s;background:#fff;
+}
+.alt-card.selected{border-color:var(--cta)}
+.alt-card-img{
+  height:110px;overflow:hidden;
+}
+.alt-card-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.alt-card-info{padding:10px 10px 12px}
+.alt-card-name{font-size:13px;font-weight:600;color:var(--text);line-height:18px}
+.alt-card-sub{font-size:11px;color:var(--text-sub);line-height:16px;margin-top:1px}
+.alt-card-amt{font-size:12px;font-weight:700;color:var(--cta);margin-top:5px}
+
+/* ── Selection checkmark (shared) ── */
+.card-sel-check{
+  position:absolute;top:8px;right:8px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--cta);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.card-sel-check svg{width:11px;height:11px}
+.alt-card.selected .card-sel-check{opacity:1}
+
+/* Email card */
+.email-card{margin-top:auto !important;
+  background:var(--bg);border:1px solid var(--bdr);
+  border-radius:var(--r-card);padding:14px;
+  display:flex;align-items:flex-start;gap:12px;
+  margin-bottom:4px;
+}
+.email-ico-wrap{
+  width:34px;height:34px;background:var(--brand-dim);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.email-ico-wrap svg{width:16px;height:16px;color:var(--brand)}
+.email-txt{font-size:13px;font-weight:400;color:var(--text-body);line-height:20px}
+.email-txt strong{color:var(--text);font-weight:600}
+
+
+/* ── Email claimed popup ── */
+.email-popup-ov{
+  display:none;position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.55);
+  align-items:center;justify-content:center;
+}
+.email-popup-ov.on{display:flex}
+.email-popup{
+  background:#fff;border-radius:20px;
+  padding:32px 24px 28px;width:320px;max-width:88%;
+  text-align:center;
+  box-shadow:0 12px 40px rgba(0,0,0,.22);
+  animation:popIn .26s var(--ease);
+}
+@keyframes popIn{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.ep-ico{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,#0EB072 0%,#047857 100%);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  box-shadow:0 4px 16px rgba(14,176,114,.35);
+}
+.ep-ico svg{width:28px;height:28px;color:#fff}
+.ep-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px}
+.ep-sub{font-size:13px;color:var(--text-sub);line-height:20px}
+.ep-email{
+  font-size:14px;font-weight:600;color:var(--text);
+  margin:10px 0 24px;word-break:break-all;
+  background:var(--bg-subtle);border-radius:8px;
+  padding:8px 12px;
+}
+.ep-done{
+  width:100%;height:48px;border:none;border-radius:var(--r-btn);
+  background:var(--cta);color:#fff;
+  font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;
+}
+.ep-done:hover{background:#1550d4}
+
+/* ═════════════════════════════
+   TERMS SHEET
+═════════════════════════════ */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,.45);
+  align-items:flex-end;justify-content:center;
+}
+.overlay.on{display:flex}
+.sheet{
+  background:#FFFFFF;border-radius:14px 14px 0 0;
+  padding:0 20px 32px;width:390px;max-height:78vh;overflow-y:auto;
+  box-shadow:0 -4px 24px rgba(0,0,0,.12);
+  animation:sheetup .28s var(--ease);
+}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:32px;height:4px;background:var(--bdr);border-radius:2px;margin:12px auto 18px}
+.sheet-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:16px;line-height:28px}
+.sheet-body{font-size:13px;font-weight:400;color:var(--text-body);line-height:22px}
+.sheet-body strong{color:var(--text);font-weight:600}
+.sheet-close{
+  width:100%;margin-top:20px;height:48px;padding:0 16px;
+  background:var(--cta);color:#FFFFFF;border:none;border-radius:var(--r-btn);
+  font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;
+}
+.sheet-close:hover{background:#1550d4}
+
+/* ── Dev controls panel ── */
+.dev-panel{
+  width:390px;background:#fff;
+  border:1px solid var(--bdr);border-radius:var(--r-card);
+  padding:14px 16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.dev-title{
+  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--brand);margin-bottom:12px;display:flex;align-items:center;gap:6px;
+}
+.dev-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:10px;
+}
+.dev-row:last-child{margin-bottom:0}
+.dev-lbl{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap}
+.dev-seg{
+  display:flex;gap:3px;background:var(--bg-subtle);
+  border-radius:6px;padding:2px;
+}
+.dev-opt{
+  padding:4px 10px;border-radius:4px;
+  font-size:11px;font-weight:500;color:var(--text-sub);
+  background:transparent;border:none;transition:all .15s;white-space:nowrap;
+}
+.dev-opt.on{
+  background:#fff;color:var(--cta);font-weight:600;
+  box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+</style>
+</head>
+<body>
+
+<div class="desktop-label">PMI Travel Retail &nbsp;·&nbsp; Mobile QR Flow</div>
+
+<div class="dev-panel">
+  <div class="dev-title">⚙ Dev Config</div>
+  <div class="dev-row">
+    <span class="dev-lbl">Simulate QR scan</span>
+    <div class="dev-seg">
+      <button class="dev-opt" onclick="setDevQR(1,this)">QR 1 · $10 Amazon</button>
+      <button class="dev-opt on" onclick="setDevQR(2,this)">QR 2 · $20 Netflix</button>
+    </div>
+  </div>
+</div>
+
+<div class="device">
+  <div class="di"></div>
+
+  <!-- Status bar -->
+  <div class="sbar">
+    <span class="sbar-time">9:41</span>
+    <div class="sbar-icons">
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="none">
+        <rect x="0" y="5.5" width="2.8" height="5.5" rx=".7" fill="#313335"/>
+        <rect x="4.2" y="3.5" width="2.8" height="7.5" rx=".7" fill="#313335"/>
+        <rect x="8.4" y="1.5" width="2.8" height="9.5" rx=".7" fill="#313335"/>
+        <rect x="12.6" y="0" width="2.8" height="11" rx=".7" fill="#D7D9DB"/>
+      </svg>
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
+        <circle cx="8" cy="11.2" r=".9" fill="#313335"/>
+        <path d="M5.3 8.2 Q8 6.2 10.7 8.2" stroke="#313335" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M2.8 5.7 Q8 2.7 13.2 5.7" stroke="#313335" stroke-width="1.3" stroke-linecap="round"/>
+        <path d=".4 3 Q8-.5 15.6 3" stroke="#313335" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      <svg width="26" height="12" viewBox="0 0 26 12" fill="none">
+        <rect x=".6" y=".6" width="21.8" height="10.8" rx="2.5" stroke="#313335" stroke-width="1.2"/>
+        <rect x="2" y="2" width="17" height="8" rx="1.5" fill="#313335"/>
+        <path d="M23.5 4.5 Q25 4.5 25 6 Q25 7.5 23.5 7.5" stroke="#313335" stroke-width="1" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Browser chrome -->
+  <div class="chrome">
+    <div class="url-bar">
+      <span class="url-lock">🔒</span>
+      <span class="url-text">promo.pmi-travelretail.com</span>
+      <span class="url-reload">↻</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+  <!-- ══════════════════════════
+       SCREEN 0 · QR SCANNER
+  ══════════════════════════ -->
+  <div id="s0" class="scr on">
+    <div class="cam-top">
+      <img src="pmi-logo.png" class="cam-logo" alt="Philip Morris International">
+      <span class="cam-top-lbl">Travel Retail</span>
+    </div>
+    <div class="cam-body">
+      <p class="cam-hint">Scan the QR code at<br>the PMI checkout counter</p>
+      <div class="cam-scan-wrap">
+        <!-- Live camera feed -->
+        <video id="cam-video" autoplay playsinline muted></video>
+        <canvas id="cam-canvas" style="display:none"></canvas>
+        <!-- Fallback static QR card (shown when camera unavailable) -->
+        <div class="qr-card" id="qr-card-fallback">
+          <div id="qr-svg-wrap"></div>
+          <div class="qr-card-label">PMI Travel Retail</div>
+        </div>
+        <!-- Scan frame overlay (corners + line + detected state) -->
+        <div class="qr-frame" id="qr-frame" onclick="triggerQRDetect()">
+          <div class="qf-corner tl"></div>
+          <div class="qf-corner tr"></div>
+          <div class="qf-corner bl"></div>
+          <div class="qf-corner br"></div>
+          <div class="qf-scanline" id="qf-scanline"></div>
+          <div class="qf-detected-ico">
+            <div class="qf-check">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <polyline points="4,12 9,17 20,6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="cam-sub">Tap the frame to scan, or hold steady<br>until the code is detected automatically</p>
+    </div>
+    <div class="cam-bottom">
+      <span class="cam-status" id="cam-status">Scanning…</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════
+       SCREEN 1 · LANDING
+  ══════════════════════════ -->
+  <div id="s1" class="scr">
+    <div class="land-top">
+      <img src="pmi-logo.png" class="pmi-logo" alt="Philip Morris International">
+      <div class="tr-label">Travel Retail</div>
+    </div>
+
+    <div class="land-body">
+      <h1 class="land-h1">
+        A small thanks<br>for travelling<br><em>with us.</em>
+      </h1>
+      <p class="land-sub">Share a few details and we'll send a digital voucher straight to your inbox.</p>
+
+      <div class="vtease-wrap">
+        <div class="vtease-card">
+          <div class="vtease-left">
+            <div class="vtease-eyebrow">e-Voucher</div>
+            <div class="vtease-title">Your travel<br>reward awaits.</div>
+            <div class="vtease-sub">Awarded on completion</div>
+          </div>
+          <div class="vtease-img-wrap">
+            <span class="vtease-emoji">🎁</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="steps-list">
+        <div class="step-row">
+          <div class="step-pill">1</div>
+          <span class="step-txt">Share a few travel details</span>
+        </div>
+        <div class="step-row">
+          <div class="step-pill">2</div>
+          <span class="step-txt">Scan your receipt &amp; boarding pass</span>
+        </div>
+        <div class="step-row">
+          <div class="step-pill">3</div>
+          <span class="step-txt">Receive your voucher by email</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sticky-footer">
+      <button class="btn-blue" onclick="go('s2')">Get started</button>
+      <div class="foot-links">
+        <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
+      </div>
+      <div class="foot-links" style="margin-top:6px">
+        <span class="foot-by">Powered by <span class="foot-xoxo">Xoxoday</span></span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════
+       SCREEN 2 · FORM
+  ══════════════════════════ -->
+  <div id="s2" class="scr">
+    <div class="inner-hdr">
+      <div class="hdr-row">
+        <button class="back-btn" onclick="goBack('s1')">‹</button>
+        <img src="pmi-logo.png" class="pmi-logo-center" alt="Philip Morris International">
+        <div style="width:22px"></div>
+      </div>
+      <div class="steps-nav">
+        <div class="sn-step">
+          <div class="sn-dot act"><span class="sn-num act">1</span></div>
+          <span class="sn-lbl act">Details</span>
+        </div>
+        <div class="sn-line"></div>
+        <div class="sn-step">
+          <div class="sn-dot"><span class="sn-num">2</span></div>
+          <span class="sn-lbl">Verify</span>
+        </div>
+        <div class="sn-line"></div>
+        <div class="sn-step">
+          <div class="sn-dot"><span class="sn-num">3</span></div>
+          <span class="sn-lbl">Reward</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <div>
+        <h2 class="f-h1">About your trip</h2>
+        <p class="f-sub">All fields required</p>
+      </div>
+
+      <div class="fg" id="fg-gender">
+        <div class="fg-lbl">Gender <span class="req">*</span></div>
+        <div class="seg">
+          <button class="seg-btn" onclick="pickSeg(this,'fg-gender')">Female</button>
+          <button class="seg-btn" onclick="pickSeg(this,'fg-gender')">Male</button>
+          <button class="seg-btn" onclick="pickSeg(this,'fg-gender')">Other</button>
+        </div>
+        <div class="fg-err">Please select your gender</div>
+      </div>
+
+      <div class="fg" id="fg-age">
+        <div class="fg-lbl">Age <span class="req">*</span></div>
+        <div class="sel-wrap" id="age-wrap">
+          <div class="dark-field" onclick="toggleDrop('age-drop',null)">
+            <div class="df-val ph" id="age-val">Select age bracket <span class="df-arr" style="margin-left:auto">›</span></div>
+          </div>
+          <div class="sel-drop" id="age-drop">
+            <div id="age-opts"></div>
+          </div>
+        </div>
+        <div class="fg-err">Please select your age bracket</div>
+      </div>
+
+      <div class="fg" id="fg-nat">
+        <div class="fg-lbl">Nationality <span class="req">*</span></div>
+        <div class="sel-wrap" id="nat-wrap">
+          <div class="dark-field" onclick="toggleDrop('nat-drop','nat-search')">
+            <div class="df-val ph" id="nat-val">Select nationality <span class="df-arr" style="margin-left:auto">›</span></div>
+          </div>
+          <div class="sel-drop" id="nat-drop">
+            <div class="sel-search">
+              <input id="nat-search" type="text" placeholder="Search nationality…" oninput="filterDrop(this,'nat-opts',nationalities,'nat-val','nat-drop')">
+            </div>
+            <div id="nat-opts"></div>
+          </div>
+        </div>
+        <div class="fg-err">Please select your nationality</div>
+      </div>
+
+      <div class="fg" id="fg-dst">
+        <div class="fg-lbl">Destination airport <span class="req">*</span></div>
+        <div class="sel-wrap" id="dst-wrap">
+          <div class="dark-field" onclick="toggleDrop('dst-drop','dst-search')">
+            <div class="df-val ph" id="dst-val">Select destination airport <span class="df-arr" style="margin-left:auto">›</span></div>
+          </div>
+          <div class="sel-drop" id="dst-drop">
+            <div class="sel-search">
+              <input id="dst-search" type="text" placeholder="Search airport or city…" oninput="filterDrop(this,'dst-opts',airports,'dst-val','dst-drop')">
+            </div>
+            <div id="dst-opts"></div>
+          </div>
+        </div>
+        <div class="fg-err">Please select your destination airport</div>
+      </div>
+
+      <div class="fg" id="fg-email">
+        <div class="fg-lbl">Email address <span class="req">*</span></div>
+        <div class="dark-field">
+          <input id="email-inp" class="df-inp" type="email" placeholder="your@email.com" oninput="clearErr('fg-email')">
+        </div>
+        <div class="fg-err">Please enter a valid email address</div>
+      </div>
+
+      <div style="height:4px"></div>
+    </div>
+
+    <div class="sticky-footer">
+      <button class="btn-blue" onclick="validateDetails()">Continue</button>
+      <div class="foot-links">
+        <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
+      </div>
+      <div class="foot-links" style="margin-top:6px">
+        <span class="foot-by">Powered by <span class="foot-xoxo">Xoxoday</span></span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════
+       SCREEN 3 · SCAN
+  ══════════════════════════ -->
+  <div id="s3" class="scr">
+    <div class="inner-hdr">
+      <div class="hdr-row">
+        <button class="back-btn" onclick="goBack('s2')">‹</button>
+        <img src="pmi-logo.png" class="pmi-logo-center" alt="Philip Morris International">
+        <div style="width:22px"></div>
+      </div>
+      <div class="steps-nav">
+        <div class="sn-step">
+          <div class="sn-dot done">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="sn-lbl done">Details</span>
+        </div>
+        <div class="sn-line done"></div>
+        <div class="sn-step">
+          <div class="sn-dot act"><span class="sn-num act">2</span></div>
+          <span class="sn-lbl act">Verify</span>
+        </div>
+        <div class="sn-line"></div>
+        <div class="sn-step">
+          <div class="sn-dot"><span class="sn-num">3</span></div>
+          <span class="sn-lbl">Reward</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scan-body">
+      <div>
+        <h2 class="f-h1" style="font-size:22px;line-height:34px;margin-bottom:4px">Verify your purchase</h2>
+        <p class="f-sub">Scan both documents to qualify</p>
+      </div>
+
+      <div class="scan-card" id="receipt-card">
+        <div class="tap-state" id="r-tap" onclick="startScan('r')">
+          <div class="tap-ico">🧾</div>
+          <div class="tap-lbl">Tap to scan receipt</div>
+          <div class="tap-sub">Point camera at your purchase receipt</div>
+        </div>
+        <div class="scan-state" id="r-scan">
+          <div class="scan-line"></div>
+          <div class="scan-corners">
+            <div class="sc tl"></div><div class="sc tr"></div>
+            <div class="sc bl"></div><div class="sc br"></div>
+          </div>
+          <div class="scan-hint">Scanning receipt…</div>
+        </div>
+        <div class="verified-state" id="r-verified">
+          <div class="v-hdr">
+            <div class="v-check">
+              <svg viewBox="0 0 18 18" fill="none">
+                <polyline points="3,9 7,13 15,5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="v-hdr-txt">
+              <div class="v-hdr-title">Purchase receipt</div>
+              <div class="v-hdr-sub">Verified</div>
+            </div>
+            <button class="retake-btn" onclick="retake('r')">Retake</button>
+          </div>
+          <div class="v-rows">
+            <div class="v-row"><span class="vr-k">Store</span><span class="vr-v">PMI Duty Free · DXB T3</span></div>
+            <div class="v-row"><span class="vr-k">Items</span><span class="vr-v">2 products</span></div>
+            <div class="v-row"><span class="vr-k">Amount</span><span class="vr-v">$78.40</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="scan-card" id="boarding-card">
+        <div class="tap-state" id="b-tap" onclick="startScan('b')">
+          <div class="tap-ico">🎫</div>
+          <div class="tap-lbl">Tap to scan boarding pass</div>
+          <div class="tap-sub">Digital or printed boarding pass</div>
+        </div>
+        <div class="scan-state" id="b-scan">
+          <div class="scan-line"></div>
+          <div class="scan-corners">
+            <div class="sc tl"></div><div class="sc tr"></div>
+            <div class="sc bl"></div><div class="sc br"></div>
+          </div>
+          <div class="scan-hint">Scanning boarding pass…</div>
+        </div>
+        <div class="verified-state" id="b-verified">
+          <div class="v-hdr">
+            <div class="v-check">
+              <svg viewBox="0 0 18 18" fill="none">
+                <polyline points="3,9 7,13 15,5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="v-hdr-txt">
+              <div class="v-hdr-title">Boarding pass</div>
+              <div class="v-hdr-sub">Verified</div>
+            </div>
+            <button class="retake-btn" onclick="retake('b')">Retake</button>
+          </div>
+          <div class="v-rows">
+            <div class="v-row"><span class="vr-k">Passenger</span><span class="vr-v">ALEX MORGAN</span></div>
+            <div class="v-row"><span class="vr-k">Flight</span><span class="vr-v">EK 217 · APR 30</span></div>
+            <div class="v-row"><span class="vr-k">Route</span><span class="vr-v">DXB → JFK</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sticky-footer" id="scan-footer" style="display:none">
+      <button class="btn-blue" onclick="go('s4')">Reveal my voucher</button>
+      <div class="foot-links">
+        <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
+      </div>
+      <div class="foot-links" style="margin-top:6px">
+        <span class="foot-by">Powered by <span class="foot-xoxo">Xoxoday</span></span>
+      </div>
+    </div>
+
+    <div class="sticky-footer" id="scan-footer-placeholder">
+      <div class="foot-links">
+        <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
+      </div>
+      <div class="foot-links" style="margin-top:6px">
+        <span class="foot-by">Powered by <span class="foot-xoxo">Xoxoday</span></span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════
+       SCREEN 4 · SUCCESS
+  ══════════════════════════ -->
+  <div id="s4" class="scr">
+  <canvas id="confetti-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:100"></canvas>
+    <div class="inner-hdr">
+      <div class="hdr-row" style="justify-content:center">
+        <img src="pmi-logo.png" class="pmi-logo-center" alt="Philip Morris International">
+      </div>
+      <div class="steps-nav">
+        <div class="sn-step">
+          <div class="sn-dot done">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="sn-lbl done">Details</span>
+        </div>
+        <div class="sn-line done"></div>
+        <div class="sn-step">
+          <div class="sn-dot done">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <polyline points="1.5,5 4,7.5 8.5,2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="sn-lbl done">Verify</span>
+        </div>
+        <div class="sn-line done"></div>
+        <div class="sn-step">
+          <div class="sn-dot act"><span class="sn-num act">3</span></div>
+          <span class="sn-lbl act">Reward</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="succ-body">
+
+      <!-- WIN STATE -->
+      <div class="win-state">
+        <div class="congrats-label">Congratulations</div>
+        <h2 class="succ-h1">Pick your<br><em>reward.</em></h2>
+
+        <!-- Voucher grid (all equal) -->
+        <div class="alt-grid" id="alt-grid"></div>
+
+      </div>
+
+      <!-- NO VOUCHER STATE -->
+      <div class="no-win-state">
+        <div class="no-win-icon">
+          <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 7C13.477 7 9 11.477 9 17v1H7v4h2v9h20v-9h2v-4h-2v-1c0-5.523-4.477-10-10-10z" fill="#FDE68A"/>
+            <rect x="8" y="18" width="22" height="4" rx="2" fill="#F59E0B"/>
+            <rect x="11" y="22" width="16" height="9" rx="1.5" fill="#FCD34D"/>
+            <rect x="17.5" y="7" width="3" height="24" rx="1.5" fill="#F59E0B"/>
+            <path d="M19 7c0 0-3-4 0-6 0 0 4 2 0 6z" fill="#10B981"/>
+            <path d="M19 7c0 0 3-4 0-6 0 0-4 2 0 6z" fill="#34D399"/>
+          </svg>
+        </div>
+        <h2 class="no-win-h1">Better luck<br>next time!</h2>
+        <p class="no-win-sub">You weren't selected for a reward this time. Keep shopping with us for another chance to win.</p>
+      </div>
+
+    </div>
+
+    <div class="sticky-footer">
+      <button class="btn-blue" id="claim-btn" onclick="claimVoucher()">Claim voucher</button>
+      <div class="foot-links">
+        <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
+      </div>
+      <div class="foot-links" style="margin-top:6px">
+        <span class="foot-by">Powered by <span class="foot-xoxo">Xoxoday</span></span>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /content -->
+</div><!-- /device -->
+
+
+<!-- Terms Sheet -->
+<div class="overlay" id="terms-overlay" onclick="maybeClose(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Terms &amp; Conditions</div>
+    <div class="sheet-body">
+      <strong>PMI Duty Free Rewards Programme</strong><br><br>
+      <strong>1. Eligibility</strong><br>
+      Open to adult travellers aged 18+ making eligible purchases at participating PMI duty-free stores at airports worldwide.<br><br>
+      <strong>2. Qualifying Products</strong><br>
+      Eligible purchases include IQOS devices, accessories, and HEETS / TEREA / LEVIA products. Minimum transaction of USD 30 required.<br><br>
+      <strong>3. Voucher Value</strong><br>
+      USD 30–59 qualifies for a $10 voucher; USD 60+ qualifies for a $20 voucher.<br><br>
+      <strong>4. Voucher Brand</strong><br>
+      The brand (Amazon, Netflix, or Airalo eSIM) is allocated randomly and cannot be exchanged.<br><br>
+      <strong>5. Claim Limit</strong><br>
+      One reward per traveller per calendar month.<br><br>
+      <strong>6. Delivery</strong><br>
+      Codes are emailed within 10 minutes of successful verification.<br><br>
+      <strong>7. Fraud</strong><br>
+      PMI reserves the right to cancel rewards in cases of suspected fraud or misuse.<br><br>
+      <strong>8. Programme Operator</strong><br>
+      Managed and fulfilled by Xoxoday on behalf of Philip Morris International Inc. By participating you agree to Xoxoday's Terms of Service and Privacy Policy.<br><br>
+      <strong>9. No Cash Value</strong><br>
+      Vouchers cannot be redeemed for cash or refunded.<br><br>
+      <strong>10. Exclusions</strong><br>
+      PMI employees and immediate family are not eligible. Void where prohibited by law.
+    </div>
+    <button class="sheet-close" onclick="closeTerms()">Close</button>
+  </div>
+</div>
+
+<!-- Email claimed popup -->
+<div class="email-popup-ov" id="email-popup-ov">
+  <div class="email-popup">
+    <div class="ep-ico">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20,6 9,17 4,12"/>
+      </svg>
+    </div>
+    <div class="ep-title">Voucher claimed!</div>
+    <div class="ep-sub">Your voucher has been sent to</div>
+    <div class="ep-email" id="popup-email-addr">—</div>
+    <button class="ep-done" onclick="closeEmailPopup()">Done</button>
+  </div>
+</div>
+
+
+<script>
+const nationalities = [
+  {flag:'🇦🇪',label:'Emirati',sub:'United Arab Emirates'},
+  {flag:'🇦🇺',label:'Australian',sub:'Australia'},
+  {flag:'🇧🇩',label:'Bangladeshi',sub:'Bangladesh'},
+  {flag:'🇧🇷',label:'Brazilian',sub:'Brazil'},
+  {flag:'🇨🇦',label:'Canadian',sub:'Canada'},
+  {flag:'🇨🇳',label:'Chinese',sub:'China'},
+  {flag:'🇨🇭',label:'Swiss',sub:'Switzerland'},
+  {flag:'🇩🇪',label:'German',sub:'Germany'},
+  {flag:'🇪🇬',label:'Egyptian',sub:'Egypt'},
+  {flag:'🇫🇷',label:'French',sub:'France'},
+  {flag:'🇬🇧',label:'British',sub:'United Kingdom'},
+  {flag:'🇭🇰',label:'Hong Konger',sub:'Hong Kong SAR'},
+  {flag:'🇮🇩',label:'Indonesian',sub:'Indonesia'},
+  {flag:'🇮🇳',label:'Indian',sub:'India'},
+  {flag:'🇮🇹',label:'Italian',sub:'Italy'},
+  {flag:'🇯🇵',label:'Japanese',sub:'Japan'},
+  {flag:'🇰🇷',label:'Korean',sub:'South Korea'},
+  {flag:'🇲🇾',label:'Malaysian',sub:'Malaysia'},
+  {flag:'🇳🇬',label:'Nigerian',sub:'Nigeria'},
+  {flag:'🇵🇭',label:'Filipino',sub:'Philippines'},
+  {flag:'🇵🇰',label:'Pakistani',sub:'Pakistan'},
+  {flag:'🇷🇺',label:'Russian',sub:'Russia'},
+  {flag:'🇸🇦',label:'Saudi',sub:'Saudi Arabia'},
+  {flag:'🇸🇬',label:'Singaporean',sub:'Singapore'},
+  {flag:'🇹🇭',label:'Thai',sub:'Thailand'},
+  {flag:'🇹🇷',label:'Turkish',sub:'Turkey'},
+  {flag:'🇺🇸',label:'American',sub:'United States'},
+  {flag:'🇻🇳',label:'Vietnamese',sub:'Vietnam'},
+  {flag:'🇿🇦',label:'South African',sub:'South Africa'},
+];
+
+const airports = [
+  {flag:'🇦🇪',label:'Dubai International',sub:'DXB · Dubai, UAE'},
+  {flag:'🇦🇪',label:'Abu Dhabi International',sub:'AUH · Abu Dhabi, UAE'},
+  {flag:'🇦🇺',label:'Sydney Kingsford Smith',sub:'SYD · Sydney, Australia'},
+  {flag:'🇧🇭',label:'Bahrain International',sub:'BAH · Manama, Bahrain'},
+  {flag:'🇨🇳',label:'Beijing Capital',sub:'PEK · Beijing, China'},
+  {flag:'🇨🇳',label:'Shanghai Pudong',sub:'PVG · Shanghai, China'},
+  {flag:'🇩🇪',label:'Frankfurt Airport',sub:'FRA · Frankfurt, Germany'},
+  {flag:'🇪🇸',label:'Madrid Barajas',sub:'MAD · Madrid, Spain'},
+  {flag:'🇫🇷',label:'Paris Charles de Gaulle',sub:'CDG · Paris, France'},
+  {flag:'🇬🇧',label:'London Heathrow',sub:'LHR · London, UK'},
+  {flag:'🇬🇧',label:'London Gatwick',sub:'LGW · London, UK'},
+  {flag:'🇭🇰',label:'Hong Kong International',sub:'HKG · Hong Kong SAR'},
+  {flag:'🇮🇩',label:'Bali Ngurah Rai',sub:'DPS · Bali, Indonesia'},
+  {flag:'🇮🇳',label:'Indira Gandhi International',sub:'DEL · New Delhi, India'},
+  {flag:'🇮🇳',label:'Chhatrapati Shivaji',sub:'BOM · Mumbai, India'},
+  {flag:'🇯🇵',label:'Tokyo Narita',sub:'NRT · Tokyo, Japan'},
+  {flag:'🇯🇵',label:'Osaka Kansai',sub:'KIX · Osaka, Japan'},
+  {flag:'🇰🇷',label:'Incheon International',sub:'ICN · Seoul, South Korea'},
+  {flag:'🇲🇾',label:'Kuala Lumpur International',sub:'KUL · KL, Malaysia'},
+  {flag:'🇳🇱',label:'Amsterdam Schiphol',sub:'AMS · Amsterdam, Netherlands'},
+  {flag:'🇵🇭',label:'Ninoy Aquino International',sub:'MNL · Manila, Philippines'},
+  {flag:'🇶🇦',label:'Hamad International',sub:'DOH · Doha, Qatar'},
+  {flag:'🇸🇬',label:'Singapore Changi',sub:'SIN · Singapore'},
+  {flag:'🇹🇭',label:'Bangkok Suvarnabhumi',sub:'BKK · Bangkok, Thailand'},
+  {flag:'🇹🇷',label:'Istanbul Airport',sub:'IST · Istanbul, Turkey'},
+  {flag:'🇺🇸',label:'New York JFK',sub:'JFK · New York, USA'},
+  {flag:'🇺🇸',label:'Los Angeles International',sub:'LAX · Los Angeles, USA'},
+  {flag:'🇺🇸',label:"Chicago O'Hare",sub:'ORD · Chicago, USA'},
+  {flag:'🇿🇦',label:'Cape Town International',sub:'CPT · Cape Town, South Africa'},
+];
+
+/* ── Dev config state ── */
+const qrCfg = {
+  1: { vouchers:[
+    {name:'Amazon',                      logo:'amazon.png',        tagline:'Shop millions of products', amt:'$20'},
+    {name:'The Lounge- Sharjah Airport', logo:'lounge.jpg',        tagline:'Airport lounge access',     amt:'$20'},
+    {name:'Apple',                       logo:'apple.png',         tagline:'App Store & iTunes',        amt:'$20'},
+    {name:'Costa Coffee',               logo:'costa coffee.png',  tagline:'Your daily brew',           amt:'$20'},
+  ]},
+  2: { vouchers:[
+    {name:'Netflix',                     logo:'netflix.jpg',       tagline:'Stream what you love',      amt:'$20'},
+    {name:'The Lounge- Sharjah Airport', logo:'lounge.jpg',        tagline:'Airport lounge access',     amt:'$20'},
+    {name:'Nike',                        logo:'nike.jpg',          tagline:'Just Do It',                amt:'$20'},
+    {name:'Costa Coffee',               logo:'costa coffee.png',  tagline:'Your daily brew',           amt:'$20'},
+  ]},
+};
+let activeQR = 2;
+let selectedVoucher = 'alt-0';
+let voucherClaimed  = false;
+
+function setDevQR(qr, btn){
+  activeQR = qr;
+  btn.closest('.dev-seg').querySelectorAll('.dev-opt').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function setupRewardScreen(){
+  const cfg = qrCfg[activeQR];
+  selectedVoucher = 'alt-0';
+  voucherClaimed  = false;
+
+  document.getElementById('alt-grid').innerHTML = cfg.vouchers.map((v,i)=>`
+    <div class="alt-card ${i===0?'selected':''}" id="alt-${i}" onclick="selectVoucher('alt-${i}')">
+      <div class="alt-card-img">
+        <img src="${v.logo}" alt="${v.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>
+      <div class="alt-card-info">
+        <div class="alt-card-name">${v.name}</div>
+        <div class="alt-card-sub">${v.tagline}</div>
+        <div class="alt-card-amt">${v.amt}</div>
+      </div>
+      <div class="card-sel-check">
+        <svg viewBox="0 0 14 14" fill="none"><polyline points="2,7 6,11 12,3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('claim-btn').style.display = '';
+}
+
+function applyDevConfig(){ /* config stored in activeQR, applied on setupRewardScreen */ }
+
+function selectVoucher(id){
+  if(voucherClaimed) return;
+  selectedVoucher = id;
+  qrCfg[activeQR].vouchers.forEach((_,i)=>{
+    const el = document.getElementById(`alt-${i}`);
+    if(el) el.classList.toggle('selected', id === `alt-${i}`);
+  });
+}
+
+function claimVoucher(){
+  voucherClaimed = true;
+  document.getElementById('claim-btn').style.display = 'none';
+  const email = document.getElementById('email-inp').value.trim() || '—';
+  document.getElementById('popup-email-addr').textContent = email;
+  document.getElementById('email-popup-ov').classList.add('on');
+}
+function closeEmailPopup(){
+  document.getElementById('email-popup-ov').classList.remove('on');
+  go('s0');
+  resetScans();
+}
+
+/* ── Age dropdown ── */
+const ageBrackets = ['21–24','25–34','35–44','45–54','55+'];
+function renderAgeOpts(chosen){
+  document.getElementById('age-opts').innerHTML = ageBrackets.map(a=>`
+    <div class="sel-opt ${a===chosen?'chosen':''}" onclick="pickAgeOpt('${a}')">${a}</div>
+  `).join('');
+}
+function pickAgeOpt(val){
+  const el = document.getElementById('age-val');
+  el.innerHTML = val + ' <span class="df-arr" style="margin-left:auto">›</span>';
+  el.classList.remove('ph');
+  document.getElementById('age-drop').classList.remove('open');
+  clearErr('fg-age');
+}
+
+/* ── Checkbox ── */
+function toggleCb(el){ el.classList.toggle('on'); }
+
+function buildQRSVG(){
+  const M = 21;
+  const g = Array.from({length:M}, ()=>new Array(M).fill(-1));
+  const PDP = [[1,1,1,1,1,1,1],[1,0,0,0,0,0,1],[1,0,1,1,1,0,1],[1,0,1,1,1,0,1],[1,0,1,1,1,0,1],[1,0,0,0,0,0,1],[1,1,1,1,1,1,1]];
+  const place = (r0,c0) => { for(let r=0;r<7;r++) for(let c=0;c<7;c++) g[r0+r][c0+c]=PDP[r][c]; };
+  place(0,0); place(0,14); place(14,0);
+  // separators
+  for(let i=0;i<8;i++){ g[7][i]=0; g[i][7]=0; g[7][13+i]=0; g[i][13]=0; g[13+i][7]=0; g[13][i]=0; }
+  // timing
+  for(let i=8;i<=12;i++){ g[6][i]=i%2; g[i][6]=i%2; }
+  // dark module
+  g[13][8]=1;
+  // pseudo-random fill
+  let s=0x9E3779B9;
+  const rng=()=>{ s=Math.imul(s^s>>>16,0x45D9F3B); s=Math.imul(s^s>>>16,0x45D9F3B); return (s>>>0)/0x100000000; };
+  for(let r=0;r<M;r++) for(let c=0;c<M;c++) if(g[r][c]===-1) g[r][c]=rng()>0.42?1:0;
+  let rects='';
+  for(let r=0;r<M;r++) for(let c=0;c<M;c++) if(g[r][c]===1) rects+=`<rect x="${c}" y="${r}" width="1.05" height="1.05"/>`;
+  document.getElementById('qr-svg-wrap').innerHTML=
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 22 22" shape-rendering="crispEdges" style="width:100%;display:block"><rect x="-0.5" y="-0.5" width="22" height="22" fill="white"/><g fill="#111">${rects}</g></svg>`;
+}
+
+let qrTimer = null;
+let camStream = null;
+let qrScanInterval = null;
+
+function resetQRUI(){
+  const frame  = document.getElementById('qr-frame');
+  const status = document.getElementById('cam-status');
+  frame.classList.remove('detected');
+  status.classList.remove('ok');
+  status.textContent = 'Scanning…';
+}
+
+async function startCamera(){
+  resetQRUI();
+  // Try real camera first
+  if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video:{facingMode:{ideal:'environment'},width:{ideal:640},height:{ideal:640}}
+      });
+      camStream = stream;
+      const vid = document.getElementById('cam-video');
+      vid.srcObject = stream;
+      await vid.play();
+      vid.style.display = '';
+      document.getElementById('qr-card-fallback').style.display = 'none';
+      document.getElementById('cam-status').textContent = 'Point at QR code…';
+      startQRLoop();
+      return;
+    } catch(e){ /* fall through to simulation */ }
+  }
+  // Fallback: simulate auto-detect with static QR card
+  clearTimeout(qrTimer);
+  qrTimer = setTimeout(triggerQRDetect, 2600);
+}
+
+function startQRLoop(){
+  const vid = document.getElementById('cam-video');
+  const cvs = document.getElementById('cam-canvas');
+  const ctx = cvs.getContext('2d');
+  clearInterval(qrScanInterval);
+  qrScanInterval = setInterval(()=>{
+    if(cur !== 's0'){ stopCamera(); return; }
+    if(vid.readyState < 2) return;
+    cvs.width = vid.videoWidth; cvs.height = vid.videoHeight;
+    ctx.drawImage(vid, 0, 0);
+    const img = ctx.getImageData(0, 0, cvs.width, cvs.height);
+    const code = typeof jsQR !== 'undefined' && jsQR(img.data, img.width, img.height, {inversionAttempts:'dontInvert'});
+    if(code) triggerQRDetect();
+  }, 250);
+}
+
+function stopCamera(){
+  clearTimeout(qrTimer);
+  clearInterval(qrScanInterval);
+  qrScanInterval = null;
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream = null; }
+  const vid = document.getElementById('cam-video');
+  if(vid){ vid.srcObject = null; vid.style.display = 'none'; }
+  document.getElementById('qr-card-fallback').style.display = '';
+}
+
+function triggerQRDetect(){
+  if(cur !== 's0') return;
+  stopCamera();
+  const frame  = document.getElementById('qr-frame');
+  const status = document.getElementById('cam-status');
+  frame.classList.add('detected');
+  status.classList.add('ok');
+  status.textContent = 'QR code detected!';
+  // Show the static QR card briefly in detected state
+  document.getElementById('qr-card-fallback').style.display = '';
+  setTimeout(()=> go('s1'), 900);
+}
+
+function clearErr(fgId){ document.getElementById(fgId)?.classList.remove('err'); }
+
+function validateDetails(){
+  const errs = [];
+  // Gender
+  if(!document.querySelector('#fg-gender .seg-btn.on')) errs.push('fg-gender');
+  // Age
+  if(document.getElementById('age-val').classList.contains('ph')) errs.push('fg-age');
+  // Nationality
+  if(document.getElementById('nat-val').classList.contains('ph')) errs.push('fg-nat');
+  // Destination
+  if(document.getElementById('dst-val').classList.contains('ph')) errs.push('fg-dst');
+  // Email
+  const emailVal = document.getElementById('email-inp').value.trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) errs.push('fg-email');
+
+  if(errs.length){
+    errs.forEach(id => document.getElementById(id).classList.add('err'));
+    document.getElementById(errs[0]).scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  go('s3');
+}
+
+let cur = 's0';
+
+function go(id){
+  const from = document.getElementById(cur);
+  const to   = document.getElementById(id);
+  from.classList.add('left');
+  to.classList.add('on');
+  to.scrollTop = 0;
+  setTimeout(()=>from.classList.remove('on','left'), 420);
+  cur = id;
+  if(id === 's4'){ setupRewardScreen(); setTimeout(launchConfetti, 300); }
+  if(id === 's0') setTimeout(startCamera, 300);
+  if(id !== 's0') stopCamera();
+}
+
+
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  const scr = document.getElementById('s4');
+  canvas.width = scr.offsetWidth || 390;
+  canvas.height = scr.offsetHeight || 844;
+  const W = canvas.width, H = canvas.height;
+
+  const colors = ['#1D61F6','#565ADD','#FFB200','#0EB072','#F04438','#FF9900','#E50914','#00B4D8','#A78BFA','#FCD34D','#34D399','#FB7185'];
+  const SHAPES = ['rect','rect','rect','circle','ribbon'];
+  const COUNT = 130;
+  const particles = [];
+
+  function makeParticle(burst){
+    const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    const size = Math.random() * 10 + 6;
+    return {
+      shape,
+      x: burst ? W * 0.5 + (Math.random() - 0.5) * W * 0.6 : Math.random() * W,
+      y: burst ? H * 0.1 + Math.random() * H * 0.1 : Math.random() * -H * 0.5,
+      w: shape === 'ribbon' ? size * 0.35 : size,
+      h: shape === 'ribbon' ? size * 1.8  : size * 0.45,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.22,
+      vx: burst ? (Math.random() - 0.5) * 9 : (Math.random() - 0.5) * 2.5,
+      vy: burst ? Math.random() * -12 - 4   : Math.random() * 4 + 2,
+      gravity: burst ? 0.35 : 0.06,
+      drag: 0.992,
+      alpha: 1,
+    };
+  }
+
+  // initial burst
+  for(let i = 0; i < COUNT * 0.45; i++) particles.push(makeParticle(true));
+  // continuous rain
+  for(let i = 0; i < COUNT * 0.55; i++) particles.push(makeParticle(false));
+
+  const start = performance.now();
+  const DURATION = 5500;
+
+  function drawShape(p){
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle = p.color;
+    if(p.shape === 'circle'){
+      ctx.beginPath();
+      ctx.arc(0, 0, p.w / 2, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    }
+    ctx.restore();
+  }
+
+  function draw(now){
+    const elapsed = now - start;
+    ctx.clearRect(0, 0, W, H);
+    const globalFade = Math.max(0, 1 - (elapsed - DURATION * 0.65) / (DURATION * 0.35));
+
+    particles.forEach(p => {
+      p.vy += p.gravity;
+      p.vx *= p.drag;
+      p.vy *= p.drag;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      p.alpha = globalFade;
+      if(p.y > H + 30){ p.y = -20; p.x = Math.random() * W; p.vy = Math.random() * 4 + 2; p.vx = (Math.random()-0.5)*2.5; }
+      drawShape(p);
+    });
+
+    if(elapsed < DURATION) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, W, H);
+  }
+
+  requestAnimationFrame(draw);
+}
+
+function goBack(id){
+  const from = document.getElementById(cur);
+  const to   = document.getElementById(id);
+  from.style.transition = 'none';
+  to.style.transition   = 'none';
+  to.style.transform    = 'translateX(-28%)';
+  to.classList.add('on');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    from.style.transition = 'transform .4s cubic-bezier(.4,0,.2,1)';
+    to.style.transition   = 'transform .4s cubic-bezier(.4,0,.2,1)';
+    from.style.transform  = 'translateX(106%)';
+    to.style.transform    = 'translateX(0)';
+  }));
+  setTimeout(()=>{
+    from.classList.remove('on');
+    from.style.transform = '';
+    from.style.transition = '';
+    to.style.transform = '';
+    to.style.transition = '';
+  }, 420);
+  cur = id;
+}
+
+function pickSeg(btn, fgId){
+  btn.closest('.seg').querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  if(fgId) clearErr(fgId);
+}
+function pickAge(btn){
+  btn.closest('.age-pills').querySelectorAll('.age-pill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function renderOpts(containerId, data, chosen){
+  document.getElementById(containerId).innerHTML = data.map(d=>`
+    <div class="sel-opt ${d.label===chosen?'chosen':''}"
+         onclick="pickOpt('${d.flag} ${d.label}','${containerId}','${d.sub}')">
+      ${d.flag} ${d.label}
+      <div class="sel-opt-sub">${d.sub}</div>
+    </div>`).join('');
+}
+function pickOpt(display, optsId, sub){
+  const valId  = optsId.replace('-opts','-val');
+  const dropId = optsId.replace('-opts','-drop');
+  const el = document.getElementById(valId);
+  el.innerHTML = display + ' <span class="df-arr" style="margin-left:auto">›</span>';
+  el.classList.remove('ph');
+  document.getElementById(dropId).classList.remove('open');
+  const fgMap = {'nat-val':'fg-nat','dst-val':'fg-dst'};
+  if(fgMap[valId]) clearErr(fgMap[valId]);
+}
+function toggleDrop(dropId, searchId){
+  const drop = document.getElementById(dropId);
+  const isOpen = drop.classList.contains('open');
+  closeAllDrops();
+  if(!isOpen){
+    drop.classList.add('open');
+    if(searchId) setTimeout(()=>document.getElementById(searchId)?.focus(), 80);
+  }
+}
+function closeAllDrops(){
+  document.querySelectorAll('.sel-drop.open').forEach(d=>d.classList.remove('open'));
+}
+function filterDrop(inp, optsId, data, valId, dropId){
+  const q = inp.value.toLowerCase();
+  const f = data.filter(d=>d.label.toLowerCase().includes(q)||d.sub.toLowerCase().includes(q));
+  const chosen = document.getElementById(valId).textContent.trim().replace(/^.{1,4}\s/,'').replace(' ›','');
+  renderOpts(optsId, f, chosen);
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.sel-wrap')) closeAllDrops();
+});
+
+let rDone=false, bDone=false;
+
+function startScan(type){
+  const tap  = document.getElementById(`${type}-tap`);
+  const scan = document.getElementById(`${type}-scan`);
+  const ver  = document.getElementById(`${type}-verified`);
+  tap.style.display = 'none';
+  scan.classList.add('show');
+  setTimeout(()=>{
+    scan.classList.remove('show');
+    ver.classList.add('show');
+    if(type==='r') rDone=true;
+    if(type==='b') bDone=true;
+    checkBothDone();
+  }, 2500);
+}
+
+function retake(type){
+  const tap = document.getElementById(`${type}-tap`);
+  const ver = document.getElementById(`${type}-verified`);
+  ver.classList.remove('show');
+  tap.style.display = '';
+  if(type==='r') rDone=false;
+  if(type==='b') bDone=false;
+  document.getElementById('scan-footer').style.display='none';
+  document.getElementById('scan-footer-placeholder').style.display='';
+}
+
+function checkBothDone(){
+  if(rDone && bDone){
+    document.getElementById('scan-footer-placeholder').style.display='none';
+    document.getElementById('scan-footer').style.display='';
+    setTimeout(()=>{
+      document.getElementById('scan-footer').scrollIntoView({behavior:'smooth',block:'nearest'});
+    },100);
+  }
+}
+
+function resetScans(){
+  rDone=false; bDone=false;
+  ['r','b'].forEach(t=>{
+    document.getElementById(`${t}-tap`).style.display='';
+    document.getElementById(`${t}-scan`).classList.remove('show');
+    document.getElementById(`${t}-verified`).classList.remove('show');
+  });
+  document.getElementById('scan-footer').style.display='none';
+  document.getElementById('scan-footer-placeholder').style.display='';
+}
+
+function copyCode(btn){
+  navigator.clipboard?.writeText('PMIU-ABCDE-FGHIJ-XU4M').catch(()=>{});
+  const orig = btn.innerHTML;
+  btn.textContent = 'Copied!';
+  btn.style.color = '#0EB072';
+  setTimeout(()=>{btn.innerHTML=orig;btn.style.color='';}, 2000);
+}
+
+function openTerms(){ document.getElementById('terms-overlay').classList.add('on'); }
+function closeTerms(){ document.getElementById('terms-overlay').classList.remove('on'); }
+function maybeClose(e){ if(e.target===document.getElementById('terms-overlay')) closeTerms(); }
+
+renderOpts('nat-opts', nationalities, 'Swiss');
+renderAgeOpts('');
+renderOpts('dst-opts', airports, 'New York JFK');
+buildQRSVG();
+startCamera();
+</script>
+</body>
+</html>
