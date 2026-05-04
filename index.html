@@ -677,6 +677,10 @@ body{
 .no-win-state{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:20px;text-align:center;padding:0 8px}
 #s4.no-voucher .win-state{display:none}
 #s4.no-voucher .no-win-state{display:flex}
+#s4.storefront .win-state{display:none}
+#s4.storefront .no-win-state{display:none}
+#s4.storefront .storefront-state{display:flex}
+#s4.storefront .sticky-footer .claim-btn-wrap{display:none}
 .no-win-icon{
   width:80px;height:80px;border-radius:50%;
   background:#FEF3C7;display:flex;align-items:center;justify-content:center;
@@ -684,6 +688,68 @@ body{
 .no-win-icon svg{width:38px;height:38px}
 .no-win-h1{font-size:24px;font-weight:600;color:var(--text);line-height:34px;letter-spacing:-.2px}
 .no-win-sub{font-size:14px;font-weight:400;color:var(--text-body);line-height:22px;max-width:280px}
+
+/* ── Storefront state ── */
+.storefront-state{
+  display:none;flex-direction:column;gap:0;flex:1;
+}
+.sf-hero{
+  background:linear-gradient(135deg,#1D61F6 0%,#565ADD 100%);
+  border-radius:var(--r-card);padding:24px 20px;
+  display:flex;flex-direction:column;gap:10px;
+  position:relative;overflow:hidden;
+}
+.sf-hero::after{
+  content:'';position:absolute;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.07);
+  top:-40px;right:-40px;
+}
+.sf-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.18);border-radius:20px;
+  padding:4px 10px;font-size:10px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;color:#fff;
+  width:fit-content;
+}
+.sf-amt{
+  font-size:42px;font-weight:800;color:#fff;
+  letter-spacing:-1.5px;line-height:1;
+}
+.sf-amt span{font-size:22px;font-weight:600;vertical-align:super;line-height:1}
+.sf-tagline{font-size:14px;color:rgba(255,255,255,.85);line-height:21px;font-weight:400}
+.sf-body{padding:18px 0;display:flex;flex-direction:column;gap:16px}
+.sf-copy{font-size:14px;color:var(--text-body);line-height:22px}
+.sf-copy strong{color:var(--text);font-weight:600}
+.sf-cats{display:flex;flex-wrap:wrap;gap:8px}
+.sf-cat{
+  display:flex;align-items:center;gap:5px;
+  background:var(--bg-subtle);border:1px solid var(--bdr);
+  border-radius:20px;padding:5px 11px;
+  font-size:12px;font-weight:500;color:var(--text-body);
+}
+.sf-cat-ico{font-size:13px}
+.sf-divider{height:1px;background:var(--bdr)}
+.sf-info{display:flex;flex-direction:column;gap:8px}
+.sf-info-row{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:12px;color:var(--text-sub);line-height:18px;
+}
+.sf-info-ico{
+  width:20px;height:20px;border-radius:6px;
+  background:var(--brand-dim);display:flex;
+  align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0;margin-top:1px;
+}
+.sf-cta{
+  width:100%;height:52px;border:none;border-radius:var(--r-btn);
+  background:var(--cta);color:#fff;
+  font-size:15px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:background .15s;text-decoration:none;margin-top:4px;
+}
+.sf-cta:hover{background:#1550d4}
+.sf-cta svg{width:16px;height:16px}
 
 /* ── Voucher grid ── */
 .alt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -837,6 +903,7 @@ body{
     <div class="dev-seg">
       <button class="dev-opt" onclick="setDevQR(1,this)">QR 1 · $10 Amazon</button>
       <button class="dev-opt on" onclick="setDevQR(2,this)">QR 2 · $20 Netflix</button>
+      <button class="dev-opt" onclick="setDevQR(3,this)">Storefront</button>
     </div>
   </div>
 </div>
@@ -1283,10 +1350,54 @@ body{
         <p class="no-win-sub">You weren't selected for a reward this time. Keep shopping with us for another chance to win.</p>
       </div>
 
+      <!-- STOREFRONT STATE -->
+      <div class="storefront-state">
+        <div class="sf-hero">
+          <div class="sf-badge">🎉 You've won</div>
+          <div class="sf-amt"><span>$</span>20</div>
+          <div class="sf-tagline">A reward worth spending on what matters most to you — coffee, fashion, travel, and everything in between.</div>
+        </div>
+
+        <div class="sf-body">
+          <p class="sf-copy">
+            Your <strong>$20 Xoxoday reward</strong> is ready to redeem — no strings attached.
+            Browse thousands of brands across categories that fit every mood, moment, and milestone.
+            From a quick Starbucks pick-me-up to a luxe lounge experience before your flight, we've got you covered.
+          </p>
+
+          <div class="sf-cats">
+            <div class="sf-cat"><span class="sf-cat-ico">☕</span>Food &amp; Drink</div>
+            <div class="sf-cat"><span class="sf-cat-ico">✈️</span>Travel</div>
+            <div class="sf-cat"><span class="sf-cat-ico">👗</span>Fashion</div>
+            <div class="sf-cat"><span class="sf-cat-ico">💄</span>Beauty</div>
+            <div class="sf-cat"><span class="sf-cat-ico">🎬</span>Entertainment</div>
+            <div class="sf-cat"><span class="sf-cat-ico">💎</span>Jewellery</div>
+            <div class="sf-cat"><span class="sf-cat-ico">📱</span>Electronics</div>
+            <div class="sf-cat"><span class="sf-cat-ico">🛍️</span>Lifestyle</div>
+          </div>
+
+          <a class="sf-cta" href="https://stores.xoxoday.com/marketplace/home" target="_blank">
+            Explore the Marketplace
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+
+          <div class="sf-divider"></div>
+
+          <div class="sf-info">
+            <div class="sf-info-row"><div class="sf-info-ico">⚡</div>Voucher code delivered instantly to your registered email.</div>
+            <div class="sf-info-row"><div class="sf-info-ico">📅</div>Valid for <strong>30 days</strong> from the date of issue.</div>
+            <div class="sf-info-row"><div class="sf-info-ico">🌍</div>Redeemable across <strong>10,000+ brands</strong> in 100+ categories globally.</div>
+            <div class="sf-info-row"><div class="sf-info-ico">🔒</div>Secured and fulfilled by Xoxoday. One reward per eligible transaction.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="sticky-footer">
-      <button class="btn-blue" id="claim-btn" onclick="claimVoucher()">Claim voucher</button>
+      <div class="claim-btn-wrap"><button class="btn-blue" id="claim-btn" onclick="claimVoucher()">Claim voucher</button></div>
       <div class="foot-links">
         <button class="foot-tc" onclick="openTerms()">View Terms &amp; Conditions</button>
       </div>
@@ -1427,6 +1538,7 @@ const qrCfg = {
     {name:'Malabar Gold & Diamonds (UAE)',                    logo:'malabar.png',       tagline:'Jewellery & gold',           amt:'$21'},
     {name:'Sugar Beauty Lounge',                              logo:'sugar.png',         tagline:'Beauty & wellness',          amt:'$19'},
   ]},
+  3: { storefront: true },
   2: { vouchers:[
     {name:'Netflix',                                          logo:'netflix.jpg',       tagline:'Stream what you love',       amt:'$20'},
     {name:'Plaza Premium Lounge - Terminal 3 Dubai Airport',  logo:'lounge.jpg',        tagline:'Airport lounge access',      amt:'$21'},
@@ -1452,6 +1564,16 @@ function setDevQR(qr, btn){
 
 function setupRewardScreen(){
   const cfg = qrCfg[activeQR];
+  const s4  = document.getElementById('s4');
+
+  // Storefront flow
+  if(cfg.storefront){
+    s4.classList.remove('no-voucher');
+    s4.classList.add('storefront');
+    return;
+  }
+
+  s4.classList.remove('no-voucher','storefront');
   selectedVoucher = 'alt-0';
   voucherClaimed  = false;
 
