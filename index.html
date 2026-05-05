@@ -248,6 +248,8 @@ body{
 }
 .cam-status{font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);transition:color .3s}
 .cam-status.ok{color:#0EB072}
+.cam-tap-hint{font-size:14px;font-weight:600;color:#fff;cursor:pointer;letter-spacing:.2px;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
 
 /* ═════════════════════════════
    SCREEN 1 — LANDING
@@ -935,7 +937,7 @@ body{
       <span class="cam-top-lbl">Travel Retail</span>
     </div>
     <div class="cam-body">
-      <p class="cam-hint">Scan the QR code at<br>the PMI checkout counter</p>
+      <p class="cam-hint">Scan the QR Code</p>
       <div class="cam-scan-wrap">
         <!-- Live camera feed -->
         <video id="cam-video" autoplay playsinline muted></video>
@@ -961,10 +963,10 @@ body{
           </div>
         </div>
       </div>
-      <p class="cam-sub">Tap the frame to scan, or hold steady<br>until the code is detected automatically</p>
     </div>
     <div class="cam-bottom">
       <span class="cam-status" id="cam-status">Scanning…</span>
+      <span class="cam-tap-hint" id="cam-tap-hint" style="display:none" onclick="go('s1')">Tap anywhere to continue →</span>
     </div>
   </div>
 
@@ -1003,7 +1005,7 @@ body{
         </div>
         <div class="step-row">
           <div class="step-pill">2</div>
-          <span class="step-txt">Scan your receipt &amp; boarding pass</span>
+          <span class="step-txt">Scan your receipt</span>
         </div>
         <div class="step-row">
           <div class="step-pill">3</div>
@@ -1171,7 +1173,7 @@ body{
     <div class="scan-body">
       <div>
         <h2 class="f-h1" style="font-size:22px;line-height:34px;margin-bottom:4px">Verify your purchase</h2>
-        <p class="f-sub">Scan both documents to qualify</p>
+        <p class="f-sub">Scan your receipt to qualify</p>
       </div>
 
       <div class="scan-card" id="receipt-card">
@@ -1209,39 +1211,6 @@ body{
         </div>
       </div>
 
-      <div class="scan-card" id="boarding-card">
-        <div class="tap-state" id="b-tap" onclick="startScan('b')">
-          <div class="tap-ico">🎫</div>
-          <div class="tap-lbl">Tap to scan boarding pass</div>
-          <div class="tap-sub">Digital or printed boarding pass</div>
-        </div>
-        <div class="scan-state" id="b-scan">
-          <div class="scan-line"></div>
-          <div class="scan-corners">
-            <div class="sc tl"></div><div class="sc tr"></div>
-            <div class="sc bl"></div><div class="sc br"></div>
-          </div>
-          <div class="scan-hint">Scanning boarding pass…</div>
-        </div>
-        <div class="verified-state" id="b-verified">
-          <div class="v-hdr">
-            <div class="v-check">
-              <svg viewBox="0 0 18 18" fill="none">
-                <polyline points="3,9 7,13 15,5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="v-hdr-txt">
-              <div class="v-hdr-title">Boarding pass</div>
-              <div class="v-hdr-sub">Verified</div>
-            </div>
-            <button class="retake-btn" onclick="retake('b')">Retake</button>
-          </div>
-          <div class="v-rows">
-            <div class="v-row"><span class="vr-k">Passenger</span><span class="vr-v">ALEX MORGAN</span></div>
-            <div class="v-row"><span class="vr-k">Flight</span><span class="vr-v">EK 217 · APR 30</span></div>
-            <div class="v-row"><span class="vr-k">Route</span><span class="vr-v">DXB → JFK</span></div>
-          </div>
-        </div>
       </div>
 
     </div>
@@ -1482,6 +1451,7 @@ const airports = [
 const qrCfg = {
   1: { vouchers:[
     {name:'Amazon',                                           logo:'amazon.png',        tagline:'Shop millions of products',  amt:'$20'},
+    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20'},
     {name:'Plaza Premium Lounge - Terminal 3 Dubai Airport',  logo:'lounge.jpg',        tagline:'Airport lounge access',      amt:'$21'},
     {name:'Apple',                                            logo:'apple.png',         tagline:'App Store & iTunes',         amt:'$20'},
     {name:'Nike',                                             logo:'nike.jpg',          tagline:'Just Do It',                 amt:'$20'},
@@ -1495,6 +1465,7 @@ const qrCfg = {
   3: { storefront: true },
   2: { vouchers:[
     {name:'Netflix',                                          logo:'netflix.jpg',       tagline:'Stream what you love',       amt:'$20'},
+    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20'},
     {name:'Plaza Premium Lounge - Terminal 3 Dubai Airport',  logo:'lounge.jpg',        tagline:'Airport lounge access',      amt:'$21'},
     {name:'Nike',                                             logo:'nike.jpg',          tagline:'Just Do It',                 amt:'$20'},
     {name:'Apple',                                            logo:'apple.png',         tagline:'App Store & iTunes',         amt:'$20'},
@@ -1623,6 +1594,8 @@ function resetQRUI(){
   frame.classList.remove('detected');
   status.classList.remove('ok');
   status.textContent = 'Scanning…';
+  document.getElementById('cam-tap-hint').style.display = 'none';
+  document.getElementById('s0').onclick = null;
 }
 
 async function startCamera(){
@@ -1683,9 +1656,9 @@ function triggerQRDetect(){
   frame.classList.add('detected');
   status.classList.add('ok');
   status.textContent = 'QR code detected!';
-  // Show the static QR card briefly in detected state
   document.getElementById('qr-card-fallback').style.display = '';
-  setTimeout(()=> go('s1'), 900);
+  document.getElementById('cam-tap-hint').style.display = '';
+  document.getElementById('s0').onclick = ()=>{ document.getElementById('s0').onclick=null; go('s1'); };
 }
 
 function clearErr(fgId){ document.getElementById(fgId)?.classList.remove('err'); }
@@ -1882,7 +1855,7 @@ document.addEventListener('click', e=>{
   if(!e.target.closest('.sel-wrap')) closeAllDrops();
 });
 
-let rDone=false, bDone=false;
+let rDone=false;
 
 function startScan(type){
   const tap  = document.getElementById(`${type}-tap`);
@@ -1894,7 +1867,6 @@ function startScan(type){
     scan.classList.remove('show');
     ver.classList.add('show');
     if(type==='r') rDone=true;
-    if(type==='b') bDone=true;
     checkBothDone();
   }, 2500);
 }
@@ -1905,13 +1877,12 @@ function retake(type){
   ver.classList.remove('show');
   tap.style.display = '';
   if(type==='r') rDone=false;
-  if(type==='b') bDone=false;
   document.getElementById('scan-footer').style.display='none';
   document.getElementById('scan-footer-placeholder').style.display='';
 }
 
 function checkBothDone(){
-  if(rDone && bDone){
+  if(rDone){
     document.getElementById('scan-footer-placeholder').style.display='none';
     document.getElementById('scan-footer').style.display='';
     setTimeout(()=>{
@@ -1921,8 +1892,8 @@ function checkBothDone(){
 }
 
 function resetScans(){
-  rDone=false; bDone=false;
-  ['r','b'].forEach(t=>{
+  rDone=false;
+  ['r'].forEach(t=>{
     document.getElementById(`${t}-tap`).style.display='';
     document.getElementById(`${t}-scan`).classList.remove('show');
     document.getElementById(`${t}-verified`).classList.remove('show');
