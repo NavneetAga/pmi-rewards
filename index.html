@@ -1445,7 +1445,7 @@ const airports = [
 const qrCfg = {
   1: { vouchers:[
     {name:'Amazon',                                           logo:'amazon.png',        tagline:'Shop millions of products',  amt:'$20'},
-    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20'},
+    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20', imgStyle:'object-fit:contain;padding:12px'},
     {name:'Plaza Premium Lounge - Terminal 3 Dubai Airport',  logo:'lounge.jpg',        tagline:'Airport lounge access',      amt:'$21'},
     {name:'Apple',                                            logo:'apple.png',         tagline:'App Store & iTunes',         amt:'$20'},
     {name:'Nike',                                             logo:'nike.jpg',          tagline:'Just Do It',                 amt:'$20'},
@@ -1459,7 +1459,7 @@ const qrCfg = {
   3: { storefront: true },
   2: { vouchers:[
     {name:'Netflix',                                          logo:'netflix.jpg',       tagline:'Stream what you love',       amt:'$20'},
-    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20'},
+    {name:'Airalo',                                           logo:'airalo.png',        tagline:'eSIM for 200+ countries',    amt:'$20', imgStyle:'object-fit:contain;padding:12px'},
     {name:'Plaza Premium Lounge - Terminal 3 Dubai Airport',  logo:'lounge.jpg',        tagline:'Airport lounge access',      amt:'$21'},
     {name:'Nike',                                             logo:'nike.jpg',          tagline:'Just Do It',                 amt:'$20'},
     {name:'Apple',                                            logo:'apple.png',         tagline:'App Store & iTunes',         amt:'$20'},
@@ -1499,7 +1499,7 @@ function setupRewardScreen(){
   document.getElementById('alt-grid').innerHTML = cfg.vouchers.map((v,i)=>`
     <div class="alt-card ${i===0?'selected':''}" id="alt-${i}" onclick="selectVoucher('alt-${i}')">
       <div class="alt-card-img">
-        <img src="${v.logo}" alt="${v.name}" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <img src="${v.logo}" alt="${v.name}" style="width:100%;height:100%;object-fit:cover;display:block;${v.imgStyle||''}">
       </div>
       <div class="alt-card-info">
         <div class="alt-card-name">${v.name}</div>
