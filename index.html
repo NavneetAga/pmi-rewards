@@ -744,6 +744,8 @@ body{
 .sf-copy-btn svg{width:13px;height:13px}
 .sf-copy-btn.copied{color:var(--success);background:#f0faf6}
 .sf-redirect-note{font-size:11px;color:var(--text-sub);margin-top:-4px;}
+.sf-email-note{font-size:12px;color:var(--text-sub);line-height:18px;}
+.sf-email-note strong{color:var(--text-body);font-weight:500;}
 .sf-instructions{
   font-size:13px;color:var(--text-body);line-height:20px;
   background:var(--bg-subtle);border-radius:var(--r-inp);
@@ -1342,6 +1344,7 @@ body{
             </div>
           </div>
           <p class="sf-redirect-note">↗ Opens Xoxoday Marketplace after copying</p>
+          <p class="sf-email-note">📩 Code also sent to <strong id="sf-email-addr">—</strong></p>
           <p class="sf-instructions">Use this code at checkout to get a flat <strong>$20 off</strong> on any transaction on the marketplace.</p>
         </div>
       </div>
@@ -1525,6 +1528,7 @@ function setupRewardScreen(){
     s4.classList.remove('no-voucher');
     s4.classList.add('storefront');
     document.getElementById('sf-voucher-code').textContent = generateVoucherCode();
+    document.getElementById('sf-email-addr').textContent = document.getElementById('email-inp').value.trim() || '—';
     const btn = document.getElementById('sf-copy-btn');
     btn.classList.remove('copied');
     btn.innerHTML = `<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg> Copy &amp; Redeem`;
