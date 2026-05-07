@@ -743,6 +743,11 @@ body{
 .sf-copy-btn:hover{background:#e8edf8}
 .sf-copy-btn svg{width:13px;height:13px}
 .sf-copy-btn.copied{color:var(--success);background:#f0faf6}
+.sf-redirect-note{
+  display:flex;align-items:flex-start;gap:6px;
+  font-size:12px;color:var(--text-sub);line-height:18px;
+}
+.sf-redirect-note strong{color:var(--text-body)}
 .sf-instructions{
   font-size:13px;color:var(--text-body);line-height:20px;
   background:var(--bg-subtle);border-radius:var(--r-inp);
@@ -1340,7 +1345,11 @@ body{
               </button>
             </div>
           </div>
-          <p class="sf-instructions">Use this code at checkout on the Xoxoday Marketplace to get a flat <strong>$20 off</strong> on any transaction.</p>
+          <p class="sf-redirect-note">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;flex-shrink:0;margin-top:1px"><path d="M2 7h8M7 3l4 4-4 4"/><path d="M10 2h2v2"/></svg>
+            Tapping <strong>Copy &amp; Redeem</strong> will copy your code and open the Xoxoday Marketplace.
+          </p>
+          <p class="sf-instructions">Use this code at checkout to get a flat <strong>$20 off</strong> on any transaction on the marketplace.</p>
         </div>
       </div>
 
