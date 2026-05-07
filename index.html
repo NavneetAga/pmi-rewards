@@ -721,8 +721,33 @@ body{
 .sf-amt span{font-size:22px;font-weight:600;vertical-align:super;line-height:1}
 .sf-voucher-lbl{font-size:18px;font-weight:500;color:rgba(255,255,255,.8);letter-spacing:.5px;margin-top:-6px}
 .sf-tagline{font-size:14px;color:rgba(255,255,255,.85);line-height:21px;font-weight:400}
-.sf-body{padding:20px 0 0;display:flex;flex-direction:column;gap:12px}
-.sf-note{font-size:12px;color:var(--text-sub);line-height:18px;text-align:center}
+.sf-body{padding:20px 0 0;display:flex;flex-direction:column;gap:16px}
+.sf-code-section{display:flex;flex-direction:column;gap:8px}
+.sf-code-lbl{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-sub)}
+.sf-code-row{
+  display:flex;align-items:center;gap:0;
+  border:1.5px solid var(--bdr);border-radius:var(--r-inp);
+  overflow:hidden;background:#fff;
+}
+.sf-code{
+  flex:1;padding:12px 14px;font-size:17px;font-weight:700;
+  letter-spacing:2px;color:var(--text);font-family:monospace;
+}
+.sf-copy-btn{
+  padding:0 16px;height:48px;border:none;border-left:1.5px solid var(--bdr);
+  background:var(--bg-subtle);cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--cta);
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+  transition:background .15s;flex-shrink:0;
+}
+.sf-copy-btn:hover{background:#e8edf8}
+.sf-copy-btn svg{width:13px;height:13px}
+.sf-copy-btn.copied{color:var(--success);background:#f0faf6}
+.sf-instructions{
+  font-size:13px;color:var(--text-body);line-height:20px;
+  background:var(--bg-subtle);border-radius:var(--r-inp);
+  padding:12px 14px;border-left:3px solid var(--cta);
+}
 .sf-cta{
   width:100%;height:52px;border:none;border-radius:var(--r-btn);
   background:var(--cta);color:#fff;
@@ -1302,12 +1327,20 @@ body{
           <div class="sf-tagline">Your reward is ready. Pick any brand you love — from coffee and fashion to travel and beyond.</div>
         </div>
         <div class="sf-body">
-          <a class="sf-cta" href="https://stores.xoxoday.com/marketplace/home" target="_blank">
-            Redeem at Marketplace
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 8h10M9 4l4 4-4 4"/>
-            </svg>
-          </a>
+          <div class="sf-code-section">
+            <div class="sf-code-lbl">Your voucher code</div>
+            <div class="sf-code-row">
+              <div class="sf-code" id="sf-voucher-code">PMI-XXXX-XXXX</div>
+              <button class="sf-copy-btn" id="sf-copy-btn" onclick="copyAndRedeem()">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="4" width="8" height="8" rx="1.5"/>
+                  <path d="M2 10V2h8"/>
+                </svg>
+                Copy &amp; Redeem
+              </button>
+            </div>
+          </div>
+          <p class="sf-instructions">Use this code at checkout on the Xoxoday Marketplace to get a flat <strong>$20 off</strong> on any transaction.</p>
         </div>
       </div>
 
@@ -1489,6 +1522,10 @@ function setupRewardScreen(){
   if(cfg.storefront){
     s4.classList.remove('no-voucher');
     s4.classList.add('storefront');
+    document.getElementById('sf-voucher-code').textContent = generateVoucherCode();
+    const btn = document.getElementById('sf-copy-btn');
+    btn.classList.remove('copied');
+    btn.innerHTML = `<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="8" height="8" rx="1.5"/><path d="M2 10V2h8"/></svg> Copy &amp; Redeem`;
     return;
   }
 
@@ -1515,6 +1552,21 @@ function setupRewardScreen(){
 }
 
 function applyDevConfig(){ /* config stored in activeQR, applied on setupRewardScreen */ }
+
+function generateVoucherCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const seg = n => Array.from({length:n}, ()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+  return `PMI-${seg(4)}-${seg(4)}`;
+}
+
+function copyAndRedeem(){
+  const code = document.getElementById('sf-voucher-code').textContent;
+  const btn  = document.getElementById('sf-copy-btn');
+  navigator.clipboard.writeText(code).catch(()=>{});
+  btn.classList.add('copied');
+  btn.innerHTML = `<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,7 5.5,10.5 12,3"/></svg> Copied!`;
+  setTimeout(()=> window.open('https://stores.xoxoday.com/marketplace/home','_blank'), 500);
+}
 
 function selectVoucher(id){
   if(voucherClaimed) return;
